@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/model/regEx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -93,7 +94,10 @@ class LoginPageState extends State<LoginPage> {
                 child: TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.of(context).pushNamed("/home");
+                        SharedPreferences.getInstance().then((prefs) {
+                          prefs.setString("jwt", "12345678");
+                        });
+                        Navigator.of(context).pushReplacementNamed("/home");
                       }
                     },
                     child: Text(

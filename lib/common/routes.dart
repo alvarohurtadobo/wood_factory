@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/ui/appbar.dart';
+import 'package:wood_center/user/ui/profilePage.dart';
 import 'package:wood_center/wood/ui/homePage.dart';
 import 'package:wood_center/wood/ui/qrPage.dart';
 import 'package:wood_center/wood/ui/scanPage.dart';
@@ -8,6 +9,7 @@ import 'package:wood_center/wood/ui/palletPage.dart';
 import 'package:wood_center/common/ui/splashPage.dart';
 import 'package:wood_center/warehouse/ui/warehousesPage.dart';
 import 'package:wood_center/wood/ui/searchPage.dart';
+import 'package:wood_center/wood/ui/searchResults.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -29,10 +31,6 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => PalletPage(creating: false),
         );
-      case "/warehouses":
-        return MaterialPageRoute(
-          builder: (_) => WarehousesPage(),
-        );
       case "/viewQr":
         return MaterialPageRoute(
           builder: (_) => QrPage(),
@@ -40,6 +38,18 @@ class RouteGenerator {
       case "/search":
         return MaterialPageRoute(
           builder: (_) => SearchPage(),
+        );
+      case "/searchResults":
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsPage(),
+        );
+      case "/profile":
+        return MaterialPageRoute(
+          builder: (_) => ProfilePage(),
+        );
+      case "/maps":
+        return MaterialPageRoute(
+          builder: (_) => WarehousesMapPage(),
         );
       default:
         return _errorRoute();

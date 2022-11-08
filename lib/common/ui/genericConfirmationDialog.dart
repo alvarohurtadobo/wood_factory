@@ -6,7 +6,7 @@ import 'package:wood_center/common/sizes.dart';
 Future<bool> genericConfirmationDialog(
     BuildContext context, String finalLabel) async {
   double dialogWidth = Sizes.width * 0.8;
-  double dialogHeight = dialogWidth / 1.2;
+  double dialogHeight = dialogWidth * 1.2;
 
   return await showDialog(
           context: context,
@@ -41,7 +41,7 @@ Future<bool> genericConfirmationDialog(
                               width: 1.6 * Sizes.padding,
                               height: 1.6 * Sizes.padding,
                               decoration: BoxDecoration(
-                                  color: const Color(0xff0077CD),
+                                  color: const Color(0xff4C2F12),
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(0.8 * Sizes.padding))),
                               child: const Icon(
@@ -59,7 +59,7 @@ Future<bool> genericConfirmationDialog(
                         child: Text(
                           "¿Estás seguro de cerrar sesión?",
                           style: TextStyle(
-                              color: const Color(0xff0F62A4),
+                              color: const Color(0xff343434),
                               decoration: TextDecoration.none,
                               fontWeight: FontWeight.normal,
                               fontSize: Sizes.font08),
@@ -67,15 +67,15 @@ Future<bool> genericConfirmationDialog(
                         ),
                       ),
                       SizedBox(
-                        height: 5 * Sizes.boxSeparation,
+                        height: Sizes.boxSeparation,
                       ),
                       Container(
-                          height: Sizes.height * 0.2,
+                          height: Sizes.height * 0.08,
                           width: dialogWidth - 2 * Sizes.padding,
                           decoration: BoxDecoration(
-                              color: const Color(0xff0077CD),
+                              color: const Color(0xffbc171d),
                               border:
-                                  Border.all(color: const Color(0xff0077CD)),
+                                  Border.all(color: const Color(0xffbc171d)),
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Sizes.height * 0.2 / 8))),
                           child: TextButton(
@@ -89,12 +89,12 @@ Future<bool> genericConfirmationDialog(
                         height: Sizes.boxSeparation,
                       ),
                       Container(
-                          height: Sizes.height * 0.2,
+                          height: Sizes.height * 0.08,
                           width: dialogWidth - 2 * Sizes.padding,
                           decoration: BoxDecoration(
                               color: Colors.white,
                               border:
-                                  Border.all(color: const Color(0xff0077CD)),
+                                  Border.all(color: const Color(0xff4C2F12)),
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Sizes.height * 0.2 / 8))),
                           child: TextButton(
@@ -102,7 +102,7 @@ Future<bool> genericConfirmationDialog(
                               Navigator.of(context).pop(false);
                             },
                             child: const Text("Volver",
-                                style: TextStyle(color: Color(0xff0077CD))),
+                                style: TextStyle(color: Color(0xff4C2F12))),
                           )),
                       SizedBox(
                         height: 2 * Sizes.boxSeparation,

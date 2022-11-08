@@ -19,8 +19,19 @@ class Warehouse {
     // countryName =
     //     myCities.where((element) => element.id == cityId).first.country;
   }
-  String getName(){
+  String getName() {
     return "$name - Bogota";
+  }
+
+  Warehouse.all() {
+    id = 0;
+    name = "Todos";
+  }
+
+  static List<Warehouse> getWarehousesForDropDown() {
+    List<Warehouse> myDropdownWarehouses = [Warehouse.all()];
+    myDropdownWarehouses.addAll(myWarehouses);
+    return myDropdownWarehouses;
   }
 }
 

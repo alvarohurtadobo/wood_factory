@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/components/button.dart';
+import 'package:wood_center/common/components/customDropDown.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
@@ -7,6 +8,9 @@ import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/wood/model/pallet.dart';
 import 'package:wood_center/wood/model/product.dart';
 import 'package:wood_center/wood/model/status.dart';
+
+import '../../common/components/doubleTextInput.dart';
+import '../../common/components/rowPiece.dart';
 
 class PalletPage extends StatefulWidget {
   bool creating;
@@ -111,81 +115,6 @@ class _PalletPageState extends State<PalletPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  
-
-  Widget CustomDropDown(
-      List<dynamic> myList, int? myValue, Function(int?) updateValue) {
-    return Container(
-      width: 0.32 * Sizes.width,
-      height: Sizes.tileNormal,
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Color(0xff343434)))),
-      child: DropdownButton<int>(
-          isExpanded: true,
-          value: myValue,
-          underline: Container(),
-          items: myList
-              .map((e) => DropdownMenuItem<int>(
-                    value: e.id,
-                    child: SizedBox(
-                        height: Sizes.tileNormal, child: Text(e.getName())),
-                  ))
-              .toList(),
-          onChanged: updateValue),
-    );
-  }
-
-  Widget DoubleTextInput(Function(double) updateParam,
-      {bool hasUnits = false}) {
-    return Container(
-      width: 0.32 * Sizes.width,
-      height: Sizes.tileNormal,
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Color(0xff343434)))),
-      child: TextField(
-        decoration: InputDecoration(
-          isDense: true,
-          filled: true,
-          fillColor: Colors.white,
-          border: InputBorder.none,
-          hintText: "",
-          contentPadding: EdgeInsets.symmetric(horizontal: Sizes.boxSeparation),
-          // enabledBorder: OutlineInputBorder(
-          //   borderSide: const BorderSide(width: 1, color: Color(0xff343434)),
-          //   borderRadius: BorderRadius.circular(8),
-          // ),
-          // focusedBorder: OutlineInputBorder(
-          //   borderSide: const BorderSide(width: 1, color: Color(0xff0077CD)),
-          //   borderRadius: BorderRadius.circular(8),
-          // ),
-          suffix: hasUnits ? const Text("cm") : null,
-          disabledBorder: null,
-        ),
-        onChanged: (value) {
-          double? parsedValue = double.tryParse(value);
-          if (parsedValue != null) {
-            updateParam(parsedValue);
-          }
-        },
-        keyboardType: const TextInputType.numberWithOptions(
-            signed: false, decimal: false),
-      ),
-    );
-  }
-
-  Widget rowPiece(Widget left, Widget right) {
-    return Container(
-      width: Sizes.width,
-      height: Sizes.tileNormal,
-      padding: EdgeInsets.symmetric(
-          horizontal: Sizes.padding, vertical: Sizes.boxSeparation),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [left, const Expanded(child: SizedBox()), right],
       ),
     );
   }

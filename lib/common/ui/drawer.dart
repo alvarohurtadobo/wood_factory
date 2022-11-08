@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wood_center/common/ui/genericConfirmationDialog.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -78,7 +79,7 @@ class MyDrawer extends StatelessWidget {
                 route: "/search"),
             drawerTile(context, Icons.map,
                 "Mapas", "Mapas guia de tu zona",
-                route: "/accountDetails"),
+                route: "/maps"),
             logoutTile(context),
             Container(
               height: Sizes.height * 0.2,
@@ -139,7 +140,18 @@ class MyDrawer extends StatelessWidget {
   Widget logoutTile(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        genericConfirmationDialog(context,"Está seguro de cerrar sesión");
+        genericConfirmationDialog(context,"Está seguro de cerrar sesión").then((confirm) {
+          if(confirm){
+            SharedPreferences.getInstance().then((prefs) {
+              prefs.remove("jwt");
+              prefs.clear();
+              Navigator.of(context).pop();
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).pop(); // Para el drawer???
+              Navigator.of(context).pushNamed("/login");
+            });
+          }
+        });
       },
       child: Container(
           padding: EdgeInsets.symmetric(

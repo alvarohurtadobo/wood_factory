@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/warehouse/model/warehouse.dart';
+import '../../common/components/rowPiece.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
 import 'package:wood_center/wood/model/status.dart';
 import 'package:wood_center/wood/model/product.dart';
+import '../../common/components/doubleTextInput.dart';
+import 'package:wood_center/warehouse/model/city.dart';
+import '../../common/components/threeColumnRowPiece.dart';
+import 'package:wood_center/common/components/button.dart';
+import 'package:wood_center/common/components/rangeTextInput.dart';
+import 'package:wood_center/common/components/customDropDown.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -12,104 +20,141 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool exactMeasures = false;
+  int? currentStatusId;
+  int? currentLocationId;
+  int? currentProductId;
+  int? currentCityId;
+  int? currentWarehouseId;
+  bool exactLength = false;
+  bool exactWidth = false;
+  bool exactHeight = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MyDrawer(),
       appBar: myAppBar("Búsqueda"),
-      body: Column(
-        children: [
-          rowPiece(
-              const Text("Familia"),
-              DropdownButton<int>(
-                  items: Product.getProductListForDropdown()
-                      .map((e) => DropdownMenuItem<int>(
-                            value: e.id,
-                            child: Text(e.code),
-                          ))
-                      .toList(),
-                  onChanged: (value) {})),
-          rowPiece(
-              const Text("Estado"),
-              DropdownButton<int>(
-                  items: Status.getStatusListForDropdown()
-                      .map((e) => DropdownMenuItem<int>(
-                            value: e.id,
-                            child: Text(e.name),
-                          ))
-                      .toList(),
-                  onChanged: (value) {})),
-          const Text("UBICACIÓN"),
-          rowPiece(const Text("Ciudad"), Container()),
-          rowPiece(const Text("Bodega"), Container()),
-          rowPiece(
-              const Text("DIMENSIONES"),
-              Row(
-                children: [
-                  const Text("Exacta"),
+      body: SizedBox(
+        width: Sizes.width,
+        height: Sizes.height,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              rowPiece(
+                  const Text("Familia"),
+                  CustomDropDown(
+                      Product.getProductListForDropdown(), currentProductId,
+                      (value) {
+                    setState(() {
+                      currentProductId = value;
+                    });
+                  })),
+              rowPiece(
+                  const Text("Estado"),
+                  CustomDropDown(
+                      Status.getStatusListForDropdown(), currentStatusId,
+                      (value) {
+                    setState(() {
+                      currentStatusId = value;
+                    });
+                  })),
+              SizedBox(
+                height: Sizes.boxSeparation,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                child: const Text("UBICACIÓN",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Color(0xff4C2F12))),
+              ),
+              rowPiece(
+                  const Text("Ciudad"),
+                  CustomDropDown(City.getCitiesForDropDown(), currentCityId,
+                      (value) {
+                    print("New city is $value");
+                    setState(() {
+                      currentCityId = value;
+                    });
+                  })),
+              rowPiece(
+                  const Text("Bodega"),
+                  CustomDropDown(
+                      (currentCityId == 0 ||currentCityId == 1 || currentCityId == null)
+                          ? Warehouse.getWarehousesForDropDown()
+                          : [],
+                      currentWarehouseId, (value) {
+                    setState(() {
+                      currentWarehouseId = value;
+                    });
+                  })),
+              SizedBox(
+                height: Sizes.boxSeparation,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                child: const Text("DIMENSIONES",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Color(0xff4C2F12))),
+              ),
+              threeColumnRowPiece(
+                  Container(), const Text("Exacta"), Container()),
+              threeColumnRowPiece(
+                  const Text("Largo"),
                   Checkbox(
-                      value: exactMeasures,
+                      value: exactLength,
                       onChanged: (value) {
                         setState(() {
-                          exactMeasures = value ?? false;
+                          exactLength = value ?? false;
                         });
-                      })
-                ],
-              )),
-              rowPiece(const Text("Largo"), DoubleTextInput((value) {
-            currentPallet.height = value;
-          })),
-          rowPiece(const Text("Ancho"), DoubleTextInput((value) {
-            currentPallet.height = value;
-          })),
-          rowPiece(const Text("Alto"), DoubleTextInput((value) {
-            currentPallet.height = value;
-          })),
-          rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
-            currentPallet.amount = value.toInt();
-          })),
-        ],
-      ),
-    );
-  }
-
-  Widget DoubleTextInput(Function(double) updateParam) {
-    return TextField(
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        border: InputBorder.none,
-        hintText: "",
-        contentPadding: EdgeInsets.symmetric(horizontal: Sizes.boxSeparation),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: Colors.white),
-          borderRadius: BorderRadius.circular(8),
+                      }),
+                  exactLength
+                      ? DoubleTextInput((value) {
+                          currentPallet.length = value;
+                        }, hasUnits: true)
+                      : DoubleRangeTextInput((val) {})),
+              threeColumnRowPiece(
+                  const Text("Ancho"),
+                  Checkbox(
+                      value: exactWidth,
+                      onChanged: (value) {
+                        setState(() {
+                          exactWidth = value ?? false;
+                        });
+                      }),
+                  exactWidth
+                      ? DoubleTextInput((value) {
+                          currentPallet.width = value;
+                        }, hasUnits: true)
+                      : DoubleRangeTextInput((val) {})),
+              threeColumnRowPiece(
+                  const Text("Alto"),
+                  Checkbox(
+                      value: exactHeight,
+                      onChanged: (value) {
+                        setState(() {
+                          exactHeight = value ?? false;
+                        });
+                      }),
+                  exactHeight
+                      ? DoubleTextInput((value) {
+                          currentPallet.height = value;
+                        }, hasUnits: true)
+                      : DoubleRangeTextInput((val) {})),
+              rowPiece(const Text("Cantidad mínima"), DoubleTextInput((value) {
+                currentPallet.amount = value.toInt();
+              })),
+              SizedBox(
+                height: Sizes.boxSeparation,
+              ),
+              CustomButton("Buscar", const Color(0xff4C2F12), () {
+                Navigator.of(context).pushNamed("/searchResults");
+              }),
+              SizedBox(
+                height: 3 * Sizes.boxSeparation,
+              ),
+            ],
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1, color: Color(0xff0077CD)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        disabledBorder: null,
-      ),
-      onChanged: (value) {
-        double? parsedValue = double.tryParse(value);
-        if (parsedValue != null) {
-          updateParam(parsedValue);
-        }
-      },
-      keyboardType:
-          const TextInputType.numberWithOptions(signed: false, decimal: false),
-    );
-  }
-
-  Widget rowPiece(Widget left, Widget right) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: Sizes.padding, vertical: Sizes.boxSeparation),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [left, const Expanded(child: SizedBox()), right],
       ),
     );
   }

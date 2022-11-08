@@ -13,6 +13,14 @@ class City {
     id = 0;
     name = "Todos";
   }
+
+  static List<City> getCitiesForDropDown() {
+    List<City> myDropdownCities = [City.all()];
+    myDropdownCities.addAll(myCities);
+    return myDropdownCities;
+  }
+
+  String getName()=> name;
 }
 
 List<City> myCities = [

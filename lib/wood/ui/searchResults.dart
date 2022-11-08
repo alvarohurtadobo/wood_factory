@@ -13,10 +13,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar("Resultados de Búsqueda",
+      appBar: myAppBar(
+        "Resultados de Búsqueda",
       ),
       drawer: MyDrawer(),
-      body: Expanded(child: ListView()),
+      body: Container(
+        padding: EdgeInsets.only(top: Sizes.padding),
+        height: Sizes.height,
+        width: Sizes.width,
+        child: ListView(children: myPallets.map((e) => palletTile(e)).toList()),
+      ),
     );
   }
 
@@ -29,28 +35,44 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       child: Container(
         width: tileWidth,
         // height: Sizes.height/8,
-        padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-        decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.black))),
+        margin: EdgeInsets.only(
+            left: Sizes.padding,
+            right: Sizes.padding,
+            bottom: Sizes.boxSeparation),
+        padding: EdgeInsets.symmetric(horizontal: Sizes.boxSeparation, vertical: Sizes.boxSeparation/2),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(Sizes.radius)),
+            border: Border.all(color: Colors.black)),
         child: Row(
           children: [
             SizedBox(
-              width: tileWidth * 0.65,
-              child: Column(children: [
-                Text(myPallet.productId.toString()),
-                Text("${myPallet.length}cm x${myPallet.width}cm x${myPallet.height}cm"),
-                Text(myPallet.locationId.toString()),
-              ],),
+              width: tileWidth * 0.60,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Producto: ${myPallet.productCode}",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      "${myPallet.length}cm x${myPallet.width}cm x${myPallet.height}cm"),
+                  Text("Ubicación: ${myPallet.locationName}"),
+                ],
+              ),
             ),
             SizedBox(
               width: Sizes.boxSeparation,
             ),
             SizedBox(
-              width: tileWidth * 0.35 - Sizes.boxSeparation,
-              child: Column(children: [
-                Text(myPallet.amount.toString()),
-                Text(myPallet.stateId.toString()),
-              ],),
+              width: tileWidth * 0.4 - 4 * Sizes.boxSeparation,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(myPallet.amount.toString()),
+                  Text(myPallet.statusName.toString()),
+                  const Icon(Icons.edit)
+                ],
+              ),
             )
           ],
         ),
