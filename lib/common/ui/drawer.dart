@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wood_center/common/ui/genericConfirmationDialog.dart';
+import 'package:wood_center/user/model/user.dart';
 
 class MyDrawer extends StatelessWidget {
   // const MyDrawer({Key? key}) : super(key: key);
@@ -55,7 +56,7 @@ class MyDrawer extends StatelessWidget {
                             // medida photo ***************************************
                             width: Sizes.width * 0.5,
                             child: Text(
-                              "Alvaro Hurtado",
+                              myUser.fullName(),
                               maxLines: 3,
                               style: TextStyle(
                                   fontWeight: FontWeight.normal,

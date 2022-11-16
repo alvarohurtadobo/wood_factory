@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Future<bool> genericConfirmationDialog(
-    BuildContext context, String finalLabel) async {
+Future<bool> genericMessageDialog(
+    BuildContext context, String message) async {
   double dialogWidth = Sizes.width * 0.8;
-  double dialogHeight = dialogWidth * 1.2;
+  double dialogHeight = dialogWidth;
 
   return await showDialog(
           context: context,
@@ -24,7 +24,7 @@ Future<bool> genericConfirmationDialog(
                         BorderRadius.all(Radius.circular(dialogHeight * 0.03)),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
@@ -57,7 +57,7 @@ Future<bool> genericConfirmationDialog(
                         padding:
                             EdgeInsets.symmetric(horizontal: dialogWidth * 0.1),
                         child: Text(
-                          finalLabel,
+                          message,
                           style: TextStyle(
                               color: const Color(0xff343434),
                               decoration: TextDecoration.none,
@@ -73,25 +73,6 @@ Future<bool> genericConfirmationDialog(
                           height: Sizes.height * 0.08,
                           width: dialogWidth - 2 * Sizes.padding,
                           decoration: BoxDecoration(
-                              color: const Color(0xffbc171d),
-                              border:
-                                  Border.all(color: const Color(0xffbc171d)),
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(Sizes.height * 0.2 / 8))),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: const Text("Si, quiero salir",
-                                style: TextStyle(color: Colors.white)),
-                          )),
-                      SizedBox(
-                        height: Sizes.boxSeparation,
-                      ),
-                      Container(
-                          height: Sizes.height * 0.08,
-                          width: dialogWidth - 2 * Sizes.padding,
-                          decoration: BoxDecoration(
                               color: Colors.white,
                               border:
                                   Border.all(color: const Color(0xff4C2F12)),
@@ -99,14 +80,11 @@ Future<bool> genericConfirmationDialog(
                                   Radius.circular(Sizes.height * 0.2 / 8))),
                           child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(false);
+                              Navigator.of(context).pop();
                             },
-                            child: const Text("Volver",
+                            child: const Text("Aceptar",
                                 style: TextStyle(color: Color(0xff4C2F12))),
                           )),
-                      SizedBox(
-                        height: 2 * Sizes.boxSeparation,
-                      ),
                     ],
                   )),
             );

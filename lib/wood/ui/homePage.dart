@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/bloc/settingsBloc.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
@@ -11,10 +12,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  bool fullyLoaded = false;
 
   void _updateIndex(int value) {
     setState(() {
       _currentIndex = value;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getSettings().then((success) {
+      setState(() {
+        fullyLoaded = success;
+      });
     });
   }
 
@@ -70,6 +82,9 @@ class _HomePageState extends State<HomePage> {
                   )),
               GestureDetector(
                 onTap: () {
+                  if(!fullyLoaded){
+                    return;
+                  }
                   Navigator.of(context).pushNamed("/createPallet");
                 },
                 child: Container(
@@ -88,8 +103,8 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                           size: Sizes.bigButtonSize / 2,
                         ),
-                        const Text("Nuevo Ingreso",
-                            style: TextStyle(color: Colors.white)),
+                        Text("Nuevo Ingreso",
+                            style: TextStyle(color:fullyLoaded? Colors.white:Colors.grey)),
                       ],
                     )),
               ),

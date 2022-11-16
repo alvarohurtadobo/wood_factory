@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+// import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wood_center/common/components/button.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
@@ -20,11 +20,11 @@ class _QrPageState extends State<QrPage> {
       body: Column(children: [
         Expanded(
             child: Center(
-          child: QrImage(
-            data: currentPallet.id.toString() + "12345678ALVARO",
-            version: QrVersions.auto,
-            size: Sizes.initialLogoSide,
-          ),
+          // child: QrImage(
+          //   data: currentPallet.id.toString() + "12345678ALVARO",
+          //   version: QrVersions.auto,
+          //   size: Sizes.initialLogoSide,
+          // ),
         )),
         CustomButton("Volver", const Color(0xff4C2F12), () {
           Navigator.of(context).pop();

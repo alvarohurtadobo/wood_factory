@@ -7,9 +7,22 @@ class Line {
     lastId++;
     id = lastId;
   }
+
+  Line.all(){
+    id=0;
+    name="Todas";
+  }
+
+  String getName() => name;
+
+  static List<Line> getLineListForDropdown() {
+    List<Line> myLinesForDropdown = [Line.all()];
+    myLinesForDropdown.addAll(demoLines);
+    return myLinesForDropdown;
+  }
 }
 
-List<Line> lines = [
+List<Line> demoLines = [
   Line("ELEMENTO DE FIJACIÓN"),
   Line("BOQUE"),
   Line("CUARTONES"),

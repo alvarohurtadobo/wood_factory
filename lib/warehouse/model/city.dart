@@ -4,6 +4,8 @@ class City {
   String name = "";
   String country = "";
 
+  City.empty();
+
   City(this.name, this.country) {
     lastId++;
     id = lastId;
@@ -20,8 +22,15 @@ class City {
     return myDropdownCities;
   }
 
-  String getName()=> name;
+  String getName() => name;
+
+  @override
+  String toString() {
+    return "[CITY] $id, $name";
+  }
 }
+
+City myCity = City.empty();
 
 List<City> myCities = [
   City("Bogota", "Colombia"),

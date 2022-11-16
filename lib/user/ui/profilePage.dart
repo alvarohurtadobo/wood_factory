@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
+import 'package:wood_center/user/model/role.dart';
+import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/warehouse/model/city.dart';
 import '../../common/components/stringTextInput.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,34 +35,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(
                             Radius.circular(Sizes.height / 16)),
-                        image: const DecorationImage(
-                            image: AssetImage("assets/images/avatar.png"),
+                        image: DecorationImage(
+                            image: NetworkImage(myUser.photoUrl),
                             fit: BoxFit.cover)),
                   ),
                 ),
-                const Text("Alvaro Hurtado Maldonado")
+                Text(myUser.fullName())
               ],
             ),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
             const Text("Nombres"),
-            StringTextInput((value) {}, prevalue: "Alvaro"),
+            StringTextInput((value) {}, prevalue: myUser.firstName),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
             const Text("Apellidos"),
-            StringTextInput((value) {}, prevalue: "Hurtado Maldonado"),
+            StringTextInput((value) {}, prevalue: myUser.lastName),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
             const Text("Email"),
-            StringTextInput((value) {}, prevalue: "a.hurtado.bo@gmail.com"),
+            StringTextInput((value) {}, prevalue: myUser.email),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
             const Text("Ciudad"),
-            StringTextInput((value) {}, prevalue: "Bogotá"),
+            StringTextInput((value) {}, prevalue: myCity.name),
+            SizedBox(
+              height: Sizes.boxSeparation,
+            ),
+            const Text("Cargo"),
+            StringTextInput((value) {}, prevalue: myRole.name),
           ],
         ),
       ),

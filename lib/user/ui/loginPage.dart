@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/model/regEx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wood_center/common/ui/genericMessageDialog.dart';
+import 'package:wood_center/user/bloc/userBloc.dart';
+import 'package:wood_center/user/model/role.dart';
+import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/warehouse/model/city.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -40,7 +45,7 @@ class LoginPageState extends State<LoginPage> {
                 alignment: Alignment.center,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/logos/logo.jpeg"),
+                        image: AssetImage("assets/logos/logo.png"),
                         fit: BoxFit.contain)),
               ),
             ),
@@ -84,27 +89,51 @@ class LoginPageState extends State<LoginPage> {
             SizedBox(
               height: Sizes.boxSeparation,
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xff343434),
-                  borderRadius: BorderRadius.circular(Sizes.radius),
-                ),
-                child: TextButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        SharedPreferences.getInstance().then((prefs) {
-                          prefs.setString("jwt", "12345678");
-                        });
-                        Navigator.of(context).pushReplacementNamed("/home");
-                      }
-                    },
-                    child: Text(
-                      "Ingresar",
-                      style: TextStyle(
-                          color: canContinue ? Colors.white : Colors.grey),
-                    ))),
+            loading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff343434),
+                      borderRadius: BorderRadius.circular(Sizes.radius),
+                    ),
+                    child: TextButton(
+                        onPressed: () async {
+                          if (loading) {
+                            return;
+                          }
+                          setState(() {
+                            loading = true;
+                          });
+                          print("Login view with $email, $password");
+                          if (_formKey.currentState!.validate()) {
+                            bool success = await login(email, password);
+                            if (success) {
+                              SharedPreferences.getInstance().then((prefs) {
+                                prefs.setString("jwt", "12345678");
+                                prefs.setString("email", email);
+                              });
+                              print(
+                                  "Login successful, user is $myUser, role: $myRole, city: $myCity");
+                              Navigator.of(context)
+                                  .pushReplacementNamed("/home");
+                            } else {
+                              await genericMessageDialog(
+                                  context, "Verifique sus credenciales");
+                            }
+                          }
+                          setState(() {
+                            loading = false;
+                          });
+                        },
+                        child: Text(
+                          "Ingresar",
+                          style: TextStyle(
+                              color: canContinue ? Colors.white : Colors.grey),
+                        ))),
             SizedBox(
               height: 5 * Sizes.boxSeparation,
             ),

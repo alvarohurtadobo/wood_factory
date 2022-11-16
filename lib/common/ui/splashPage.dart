@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:wood_center/user/bloc/userBloc.dart';
+
 import '../sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,10 +18,13 @@ class SplashPageState extends State<SplashPage> {
     Timer(const Duration(seconds: 2), () {
       SharedPreferences.getInstance().then((prefs) {
         String jwt = prefs.getString("jwt") ?? "";
-        if (jwt == "") {
+        String email = prefs.getString("email") ?? "";
+        if (jwt == "" && email == "") {
           Navigator.of(context).pushReplacementNamed("/login");
         } else {
-          Navigator.of(context).pushReplacementNamed("/home");
+          loginWithEmail(email).then((value) {
+            Navigator.of(context).pushReplacementNamed("/home");
+          });
         }
       });
     });
@@ -47,7 +52,7 @@ class SplashPageState extends State<SplashPage> {
                 height: Sizes.initialLogoSide,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("assets/logos/logo.jpeg"),
+                        image: AssetImage("assets/logos/logo.png"),
                         fit: BoxFit.contain)),
               ),
             ),
