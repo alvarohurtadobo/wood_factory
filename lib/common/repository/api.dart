@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 const String serverUrl = "http://10.0.2.2:8000/";
 
 // const String apiPath = "api/v1/";
-const String apiPath = "";
+const String apiPath = "api/v1/";
 String finalUrl = serverUrl + apiPath;
 String currentToken = "";
 
