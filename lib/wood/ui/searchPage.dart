@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/warehouse/model/warehouse.dart';
+import 'package:wood_center/wood/model/line.dart';
 import '../../common/components/rowPiece.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
@@ -11,6 +11,7 @@ import '../../common/components/doubleTextInput.dart';
 import 'package:wood_center/warehouse/model/city.dart';
 import '../../common/components/threeColumnRowPiece.dart';
 import 'package:wood_center/common/components/button.dart';
+import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/common/components/rangeTextInput.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
 
@@ -28,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   bool exactLength = false;
   bool exactWidth = false;
   bool exactHeight = false;
+  int? currentLineId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +42,56 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: Sizes.padding,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                child: const Text("UBICACIÓN",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Color(0xff3D464C))),
+              ),
               rowPiece(
-                  const Text("Familia"),
+                  const Text("Ciudad"),
+                  CustomDropDown(City.getCitiesForDropDown(), currentCityId,
+                      (value) {
+                    print("New city is $value");
+                    setState(() {
+                      currentCityId = value;
+                    });
+                  })),
+              rowPiece(
+                  const Text("Bodega"),
+                  CustomDropDown(
+                      (currentCityId == 0 ||
+                              currentCityId == 1 ||
+                              currentCityId == null)
+                          ? Warehouse.getWarehousesForDropDown()
+                          : [],
+                      currentWarehouseId, (value) {
+                    setState(() {
+                      currentWarehouseId = value;
+                    });
+                  })),
+              SizedBox(
+                height: Sizes.boxSeparation,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                child: const Text("INFORMACIÓN DE PRODUCTO",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Color(0xff3D464C))),
+              ),
+              rowPiece(
+                  const Text("Línea"),
+                  CustomDropDown(Line.getLineListForDropdown(), currentLineId,
+                      (value) {
+                    setState(() {
+                      currentLineId = value;
+                    });
+                  })),
+              rowPiece(
+                  const Text("Producto"),
                   CustomDropDown(
                       Product.getProductListForDropdown(), currentProductId,
                       (value) {
@@ -61,92 +111,72 @@ class _SearchPageState extends State<SearchPage> {
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                child: const Text("UBICACIÓN",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Color(0xff4C2F12))),
-              ),
-              rowPiece(
-                  const Text("Ciudad"),
-                  CustomDropDown(City.getCitiesForDropDown(), currentCityId,
-                      (value) {
-                    print("New city is $value");
-                    setState(() {
-                      currentCityId = value;
-                    });
-                  })),
-              rowPiece(
-                  const Text("Bodega"),
-                  CustomDropDown(
-                      (currentCityId == 0 ||currentCityId == 1 || currentCityId == null)
-                          ? Warehouse.getWarehousesForDropDown()
-                          : [],
-                      currentWarehouseId, (value) {
-                    setState(() {
-                      currentWarehouseId = value;
-                    });
-                  })),
-              SizedBox(
-                height: Sizes.boxSeparation,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                child: const Text("DIMENSIONES",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Color(0xff4C2F12))),
-              ),
-              threeColumnRowPiece(
-                  Container(), const Text("Exacta"), Container()),
-              threeColumnRowPiece(
-                  const Text("Largo"),
-                  Checkbox(
-                      value: exactLength,
-                      onChanged: (value) {
-                        setState(() {
-                          exactLength = value ?? false;
-                        });
-                      }),
-                  exactLength
-                      ? DoubleTextInput((value) {
-                          currentPallet.length = value;
-                        }, hasUnits: true)
-                      : DoubleRangeTextInput((val) {})),
-              threeColumnRowPiece(
-                  const Text("Ancho"),
-                  Checkbox(
-                      value: exactWidth,
-                      onChanged: (value) {
-                        setState(() {
-                          exactWidth = value ?? false;
-                        });
-                      }),
-                  exactWidth
-                      ? DoubleTextInput((value) {
-                          currentPallet.width = value;
-                        }, hasUnits: true)
-                      : DoubleRangeTextInput((val) {})),
-              threeColumnRowPiece(
-                  const Text("Alto"),
-                  Checkbox(
-                      value: exactHeight,
-                      onChanged: (value) {
-                        setState(() {
-                          exactHeight = value ?? false;
-                        });
-                      }),
-                  exactHeight
-                      ? DoubleTextInput((value) {
-                          currentPallet.height = value;
-                        }, hasUnits: true)
-                      : DoubleRangeTextInput((val) {})),
+              (currentProductId == 0 || currentProductId == null)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: Sizes.padding),
+                          child: const Text("DIMENSIONES",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff3D464C))),
+                        ),
+                        threeColumnRowPiece(
+                            Container(), const Text("Exacta"), Container()),
+                        threeColumnRowPiece(
+                            const Text("Largo"),
+                            Checkbox(
+                                value: exactLength,
+                                onChanged: (value) {
+                                  setState(() {
+                                    exactLength = value ?? false;
+                                  });
+                                }),
+                            exactLength
+                                ? DoubleTextInput((value) {
+                                    currentProduct.length = value;
+                                  }, hasUnits: true)
+                                : DoubleRangeTextInput((val) {})),
+                        threeColumnRowPiece(
+                            const Text("Ancho"),
+                            Checkbox(
+                                value: exactWidth,
+                                onChanged: (value) {
+                                  setState(() {
+                                    exactWidth = value ?? false;
+                                  });
+                                }),
+                            exactWidth
+                                ? DoubleTextInput((value) {
+                                    currentProduct.width = value;
+                                  }, hasUnits: true)
+                                : DoubleRangeTextInput((val) {})),
+                        threeColumnRowPiece(
+                            const Text("Alto"),
+                            Checkbox(
+                                value: exactHeight,
+                                onChanged: (value) {
+                                  setState(() {
+                                    exactHeight = value ?? false;
+                                  });
+                                }),
+                            exactHeight
+                                ? DoubleTextInput((value) {
+                                    currentProduct.height = value;
+                                  }, hasUnits: true)
+                                : DoubleRangeTextInput((val) {})),
+                      ],
+                    )
+                  : Container(),
               rowPiece(const Text("Cantidad mínima"), DoubleTextInput((value) {
                 currentPallet.amount = value.toInt();
               })),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
-              CustomButton("Buscar", const Color(0xff4C2F12), () {
+              CustomButton("Buscar", const Color(0xff3D464C), () {
                 Navigator.of(context).pushNamed("/searchResults");
               }),
               SizedBox(

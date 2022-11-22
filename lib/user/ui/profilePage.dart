@@ -25,6 +25,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: Sizes.padding,
+            ),
             Row(
               children: [
                 Container(

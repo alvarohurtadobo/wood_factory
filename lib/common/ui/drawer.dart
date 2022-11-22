@@ -111,7 +111,7 @@ class MyDrawer extends StatelessWidget {
           child: Row(
             children: [
               Icon(myIcon,
-                color: const Color(0xff4C2F12)),
+                color: const Color(0xff3D464C)),
               SizedBox(
                 width: Sizes.padding,
               ),
@@ -165,7 +165,7 @@ class MyDrawer extends StatelessWidget {
             children: [
               const Icon(
                 Icons.exit_to_app,
-                color: Color(0xff4C2F12),
+                color: Color(0xff3D464C),
               ),
               SizedBox(
                 width: Sizes.padding,

@@ -41,7 +41,7 @@ Future<bool> genericMessageDialog(
                               width: 1.6 * Sizes.padding,
                               height: 1.6 * Sizes.padding,
                               decoration: BoxDecoration(
-                                  color: const Color(0xff4C2F12),
+                                  color: const Color(0xff3D464C),
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(0.8 * Sizes.padding))),
                               child: const Icon(
@@ -75,7 +75,7 @@ Future<bool> genericMessageDialog(
                           decoration: BoxDecoration(
                               color: Colors.white,
                               border:
-                                  Border.all(color: const Color(0xff4C2F12)),
+                                  Border.all(color: const Color(0xff3D464C)),
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Sizes.height * 0.2 / 8))),
                           child: TextButton(
@@ -83,7 +83,7 @@ Future<bool> genericMessageDialog(
                               Navigator.of(context).pop();
                             },
                             child: const Text("Aceptar",
-                                style: TextStyle(color: Color(0xff4C2F12))),
+                                style: TextStyle(color: Color(0xff3D464C))),
                           )),
                     ],
                   )),

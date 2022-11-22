@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 
-const String serverUrl = "http://127.0.0.1:8000/";
+const String serverUrl = "http://10.0.2.2:8000/";
 
-const String apiPath = "api/v1/";
+// const String apiPath = "api/v1/";
+const String apiPath = "";
 String finalUrl = serverUrl + apiPath;
 String currentToken = "";
 
@@ -71,16 +72,12 @@ class Api {
           options: Options(headers: _getHeader()), data: myBodyString);
     }
     print("Response: " + response.data.toString());
-    Map objectResponse = json.decode(response.data);
-    print(objectResponse);
+    Map<String, dynamic> objectResponse = response.data;
     if (objectResponse["error"] == true) {
-      return BackendResponse(myBody: {}, status: objectResponse["status"]);
+      return BackendResponse(myBody: {}, status: response.statusCode ?? 0);
     }
-    if (objectResponse.containsKey("body")) {
-      return BackendResponse(
-          myBody: objectResponse["body"], status: response.statusCode ?? 0);
-    }
-    return BackendResponse(myBody: {}, status: 666);
+    return BackendResponse(
+        myBody: objectResponse, status: response.statusCode ?? 0);
   }
 
   static Future<BackendResponse> _post(String path, Map myBody) async {
@@ -93,6 +90,6 @@ class Api {
 
   static Future<BackendResponse> login(String email, String password) async {
     return await Api._post(
-        "auth/login", {"email": email, "password": password});
+        "user/login", {"email": email, "password": password});
   }
 }

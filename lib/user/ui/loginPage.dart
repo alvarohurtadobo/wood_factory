@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/user/model/role.dart';
 import 'package:wood_center/common/model/regEx.dart';
+import 'package:wood_center/user/bloc/userBloc.dart';
+import 'package:wood_center/warehouse/model/city.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wood_center/common/ui/genericMessageDialog.dart';
-import 'package:wood_center/user/bloc/userBloc.dart';
-import 'package:wood_center/user/model/role.dart';
-import 'package:wood_center/user/model/user.dart';
-import 'package:wood_center/warehouse/model/city.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class LoginPageState extends State<LoginPage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     Sizes.initSizes(width, height);
+    loading  = false; // TODO REmove
 
     return Scaffold(
         body: Form(
@@ -56,9 +58,9 @@ class LoginPageState extends State<LoginPage> {
             const Text("Correo Electrónico"),
             TextFormField(
               validator: (value) {
-                // if (!isGoodEmail(value ?? "")) {
-                //   return "Introduzca un email válido";
-                // }
+                if (!isGoodEmail(value ?? "")) {
+                  return "Introduzca un email válido";
+                }
                 return null;
               },
               onChanged: (value) {
@@ -113,7 +115,7 @@ class LoginPageState extends State<LoginPage> {
                             bool success = await login(email, password);
                             if (success) {
                               SharedPreferences.getInstance().then((prefs) {
-                                prefs.setString("jwt", "12345678");
+                                prefs.setString("jwt", token);
                                 prefs.setString("email", email);
                               });
                               print(

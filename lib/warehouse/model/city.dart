@@ -2,12 +2,21 @@ class City {
   static int lastId = 0;
   int id = 0;
   String name = "";
+  String code = "";
   String country = "";
 
   City.empty();
 
+  City.fromBackendResponse(Map<String, dynamic> myRes){
+    id = myRes["id"]??0;
+    name = myRes["name"]??"";
+    code = myRes["code"]??"";
+    country = myRes["country"]??"";
+  }
+
   City(this.name, this.country) {
     lastId++;
+    code = name;
     id = lastId;
   }
 
@@ -26,7 +35,7 @@ class City {
 
   @override
   String toString() {
-    return "[CITY] $id, $name";
+    return "[CITY] $id, $name, $code";
   }
 }
 

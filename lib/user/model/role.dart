@@ -5,6 +5,11 @@ class Role {
   Role(this.id, this.name);
   Role.empty();
 
+  Role.fromBackendResponse(Map<String, dynamic> myRes){
+    id = myRes["id"]??0;
+    name = myRes["name"]??"";
+  }
+
   @override
   String toString() {
     return "[ROLE] $id, $name";

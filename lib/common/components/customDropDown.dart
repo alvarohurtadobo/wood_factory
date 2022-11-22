@@ -16,7 +16,12 @@ Widget CustomDropDown(
             .map((e) => DropdownMenuItem<int>(
                   value: e.id,
                   child: SizedBox(
-                      height: Sizes.tileNormal, child: Text(e.getName())),
+                      height: Sizes.tileNormal,
+                      width: Sizes.width / 2,
+                      child: Text(
+                        e.getName(),
+                        maxLines: 2,
+                      )),
                 ))
             .toList(),
         onChanged: updateValue),

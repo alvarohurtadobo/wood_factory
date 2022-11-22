@@ -8,12 +8,27 @@ class User {
   String photoUrl = "http://cdn.onlinewebfonts.com/svg/img_569206.png";
   String documentId = "";
   String charge = "";
+  bool active = false;
   int cityId = 0;
   int roleId = 0;
 
-  String fullName()=>"$firstName $lastName";
+  String fullName() => "$firstName $lastName";
 
   User.empty();
+
+  User.fromBackendResponse(Map<String, dynamic> myRes) {
+    id = myRes["id"];
+    email = myRes["email"] ?? "";
+    firstName = myRes["first_name"] ?? "";
+    lastName = myRes["last_name"] ?? "";
+    photoUrl = myRes["photo_url"] ??
+        "http://cdn.onlinewebfonts.com/svg/img_569206.png";
+    documentId = myRes["document"] ?? "";
+    charge = myRes["charge"] ?? "";
+    active = myRes["active"] == true;
+    cityId = myRes["city_id"] ?? 0;
+    roleId = myRes["role_id"] ?? 0;
+  }
 
   User(
       {this.email = "",
@@ -54,7 +69,7 @@ List<User> demoUsers = [
   User(
       email: "admin@mail.com",
       password: "1234",
-      firstName: "Administrado",
+      firstName: "Administrador",
       lastName: "Administrador",
       photoUrl: "http://cdn.onlinewebfonts.com/svg/img_569206.png",
       documentId: "987654321",

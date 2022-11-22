@@ -1,2 +1,3 @@
 
-const bool DEBUG = true;
+const bool DEBUG = false;
+String token = "";

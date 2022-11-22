@@ -3,6 +3,7 @@ import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
+import 'package:wood_center/wood/model/product.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -55,7 +56,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                      "${myPallet.length}cm x${myPallet.width}cm x${myPallet.height}cm"),
+                      "${currentProduct.length}cm x${currentProduct.width}cm x${currentProduct.height}cm"),
                   Text("Ubicación: ${myPallet.locationName}"),
                 ],
               ),

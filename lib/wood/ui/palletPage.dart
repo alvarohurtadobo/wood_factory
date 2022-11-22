@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/warehouse/model/city.dart';
 import 'package:wood_center/wood/model/line.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
 import 'package:wood_center/wood/model/status.dart';
+import 'package:wood_center/wood/pdf/createPdf.dart';
 import 'package:wood_center/wood/model/product.dart';
+import 'package:wood_center/user/model/employee.dart';
+import 'package:wood_center/user/model/provider.dart';
+import 'package:wood_center/warehouse/model/city.dart';
 import 'package:wood_center/common/components/button.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
@@ -23,11 +26,8 @@ class PalletPage extends StatefulWidget {
 
 class _PalletPageState extends State<PalletPage> {
   int? currentLineId;
-  int? currentStatusId;
-  int? currentLocationId;
   int? currentWarehouseId;
-  int? currentProductId;
-  bool innerProduction = false;
+  bool externalProvider = false;
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,7 @@ class _PalletPageState extends State<PalletPage> {
     Sizes.initSizes(width, height);
     return Scaffold(
       drawer: MyDrawer(),
-      appBar: myAppBar(widget.creating ? "Nueva Paleta" : "Editar Paleta"),
+      appBar: myAppBar(widget.creating ? "Nuevo Kit" : "Editar Kit"),
       body: SizedBox(
         height: Sizes.height,
         width: Sizes.width,
@@ -63,14 +63,15 @@ class _PalletPageState extends State<PalletPage> {
               ),
               rowPiece(
                   const Text("Ciudad"),
-                  CustomDropDown(City.getCitiesForDropDown(), currentLocationId,
+                  CustomDropDown(
+                      City.getCitiesForDropDown(), currentPallet.locationId,
                       (value) {
                     setState(() {
-                      currentLocationId = value;
+                      currentPallet.locationId = value;
                     });
                   })),
               rowPiece(
-                  const Text("LÍNEA"),
+                  const Text("Familia"),
                   CustomDropDown(Line.getLineListForDropdown(), currentLineId,
                       (value) {
                     setState(() {
@@ -86,79 +87,101 @@ class _PalletPageState extends State<PalletPage> {
                       style: TextStyle(fontWeight: FontWeight.bold))),
               rowPiece(
                   const Text("Producto"),
-                  CustomDropDown(myProducts, currentProductId, (value) {
+                  CustomDropDown(myProducts, currentPallet.productId, (value) {
                     setState(() {
-                      currentProductId = value;
+                      currentPallet.productId = value;
                     });
                   })),
               rowPiece(
                   const Text("Ubicación"),
-                  CustomDropDown(myWarehouses, currentWarehouseId, (value) {
+                  CustomDropDown(myWarehouses, currentPallet.locationId,
+                      (value) {
                     setState(() {
-                      currentWarehouseId = value;
+                      currentPallet.locationId = value;
                     });
                   })),
               rowPiece(
                   const Text("Estado"),
-                  CustomDropDown(myStatus, currentStatusId, (value) {
+                  CustomDropDown(myStatus, currentPallet.stateId, (value) {
                     setState(() {
-                      currentStatusId = value;
+                      currentPallet.stateId = value;
                     });
                   })),
+              rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
+                currentPallet.amount = value.toInt();
+              })),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
               rowPiece(
-                  const Text("Largo"),
-                  DoubleTextInput((value) {
-                    currentPallet.length = value;
-                  }, hasUnits: true)),
-              rowPiece(
-                  const Text("Ancho"),
-                  DoubleTextInput((value) {
-                    currentPallet.width = value;
-                  }, hasUnits: true)),
-              rowPiece(
-                  const Text("Alto"),
-                  DoubleTextInput((value) {
-                    currentPallet.height = value;
-                  }, hasUnits: true)),
-              SizedBox(
-                height: Sizes.boxSeparation,
-              ),
-              rowPiece(
-                  const Text("Producción propia"),
+                  const Text("Proveedor externo"),
                   Container(
                     alignment: Alignment.centerRight,
                     child: Switch(
-                        value: innerProduction,
+                        value: externalProvider,
                         onChanged: (value) {
                           setState(() {
-                            innerProduction = value;
+                            externalProvider = value;
                           });
                         }),
                   )),
-              rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
-                currentPallet.amount = value.toInt();
-              })),
-              rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
-                currentPallet.amount = value.toInt();
-              })),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
-              CustomButton("Generar QR", const Color(0xff4C2F12), () {
-                Navigator.of(context).pushNamed("/viewQr");
+              externalProvider
+                  ? Container()
+                  : rowPiece(
+                      const Text("Lugar de origen"),
+                      CustomDropDown(
+                          myWarehouses, currentPallet.originalLocationId,
+                          (value) {
+                        setState(() {
+                          currentPallet.originalLocationId = value;
+                        });
+                      })),
+              externalProvider
+                  ? Container()
+                  : SizedBox(
+                      height: Sizes.boxSeparation,
+                    ),
+              externalProvider
+                  ? Container()
+                  : rowPiece(
+                      const Text("Empleado"),
+                      CustomDropDown(myEmployees, currentPallet.employeeId,
+                          (value) {
+                        setState(() {
+                          currentPallet.employeeId = value;
+                        });
+                      })),
+              externalProvider
+                  ? rowPiece(
+                      const Text("Nombre"),
+                      CustomDropDown(
+                          myProviders, currentPallet.externalProviderId,
+                          (value) {
+                        setState(() {
+                          currentPallet.externalProviderId = value;
+                        });
+                      }))
+                  : Container(),
+              CustomButton("Exportar QR", const Color(0xff3D464C), () {
+                // Navigator.of(context).pushNamed("/viewQr");
+                exportAsPdf(currentPallet);
               }),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
               CustomButton(widget.creating ? "Crear" : "Actualizar",
-                  const Color(0xff13922C), () {}),
+                  const Color(0xff13922C), () {
+                Navigator.of(context).pop();
+              }),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
-              CustomButton("Eliminar", const Color(0xffbc171d), () {}),
+              CustomButton("Eliminar", const Color(0xffbc171d), () {
+                Navigator.of(context).pop();
+              }),
               SizedBox(
                 height: 3 * Sizes.boxSeparation,
               ),

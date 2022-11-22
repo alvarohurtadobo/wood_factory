@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/bloc/settingsBloc.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
+import 'package:wood_center/common/bloc/settingsBloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  bool fullyLoaded = false;
+  bool fullyLoaded = true;
 
   void _updateIndex(int value) {
     setState(() {
@@ -20,20 +20,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getSettings().then((success) {
-      setState(() {
-        fullyLoaded = success;
-      });
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getSettings().then((success) {
+  //     setState(() {
+  //       fullyLoaded = success;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    fullyLoaded = true;
     Sizes.initSizes(width, height);
     return Scaffold(
         drawer: MyDrawer(),

@@ -26,7 +26,7 @@ class _QrPageState extends State<QrPage> {
           //   size: Sizes.initialLogoSide,
           // ),
         )),
-        CustomButton("Volver", const Color(0xff4C2F12), () {
+        CustomButton("Volver", const Color(0xff3D464C), () {
           Navigator.of(context).pop();
         }),
         SizedBox(

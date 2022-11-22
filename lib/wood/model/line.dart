@@ -13,18 +13,27 @@ class Line {
     name="Todas";
   }
 
+  Line.fromBackendResponse(Map<String, dynamic> myRes){
+    id = myRes["id"]??0;
+    name = myRes["name"]??"";
+  }
+
   String getName() => name;
+
+  @override
+  String toString() {
+    return "[LINE] $id, $name";
+  }
 
   static List<Line> getLineListForDropdown() {
     List<Line> myLinesForDropdown = [Line.all()];
-    myLinesForDropdown.addAll(demoLines);
+    myLinesForDropdown.addAll(myLines);
     return myLinesForDropdown;
   }
 }
 
-List<Line> demoLines = [
-  Line("ELEMENTO DE FIJACIÓN"),
-  Line("BOQUE"),
+List<Line> myLines = [Line("ELEMENTO DE FIJACIÓN"),
+  Line("BLOQUE"),
   Line("CUARTONES"),
   Line("TROZA"),
   Line("ESTIBAS"),
@@ -34,5 +43,4 @@ List<Line> demoLines = [
   Line("TACOS"),
   Line("HUACAL"),
   Line("MARCOS"), 
-  Line("PRODUCTOS POR REPARACION"),
-];
+  Line("PRODUCTOS POR REPARACION"),];
