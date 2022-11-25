@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/wood/model/line.dart';
-import '../../common/components/rowPiece.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
-import 'package:wood_center/wood/model/status.dart';
 import 'package:wood_center/wood/model/product.dart';
-import '../../common/components/doubleTextInput.dart';
+import 'package:wood_center/wood/model/woodState.dart';
 import 'package:wood_center/warehouse/model/city.dart';
-import '../../common/components/threeColumnRowPiece.dart';
 import 'package:wood_center/common/components/button.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
+import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/common/components/rangeTextInput.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
+import 'package:wood_center/common/components/doubleTextInput.dart';
+import 'package:wood_center/common/components/threeColumnRowPiece.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -102,7 +102,7 @@ class _SearchPageState extends State<SearchPage> {
               rowPiece(
                   const Text("Estado"),
                   CustomDropDown(
-                      Status.getStatusListForDropdown(), currentStatusId,
+                      WoodState.getStatusListForDropdown(), currentStatusId,
                       (value) {
                     setState(() {
                       currentStatusId = value;
@@ -178,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
               CustomButton("Buscar", const Color(0xff3D464C), () {
                 Navigator.of(context).pushNamed("/searchResults");
-              }),
+              }, false),
               SizedBox(
                 height: 3 * Sizes.boxSeparation,
               ),

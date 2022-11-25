@@ -14,6 +14,14 @@ class Provider {
   }
 
   String getName()=> "$firstName $lastName";
+
+  Provider.fromBackendResponse(Map<String, dynamic> myRes) {
+    id = myRes["id"] ?? 0;
+    firstName = myRes["first_name"] ?? "";
+    lastName = myRes["last_name"] ?? "";
+    cityId = myRes["city_id"] ?? 0;
+    nit = myRes["nit"] ?? "";
+  }
 }
 
 List<Provider> myProviders = [

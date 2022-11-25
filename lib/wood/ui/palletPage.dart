@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
-import 'package:wood_center/wood/model/status.dart';
 import 'package:wood_center/wood/pdf/createPdf.dart';
 import 'package:wood_center/wood/model/product.dart';
 import 'package:wood_center/user/model/employee.dart';
 import 'package:wood_center/user/model/provider.dart';
+import 'package:wood_center/wood/model/woodState.dart';
 import 'package:wood_center/warehouse/model/city.dart';
+import 'package:wood_center/warehouse/model/location.dart';
 import 'package:wood_center/common/components/button.dart';
-import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
 import 'package:wood_center/common/components/doubleTextInput.dart';
@@ -25,9 +27,12 @@ class PalletPage extends StatefulWidget {
 }
 
 class _PalletPageState extends State<PalletPage> {
-  int? currentLineId;
   int? currentWarehouseId;
   bool externalProvider = false;
+
+  bool updatingLoading = false;
+  bool deletingLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +45,7 @@ class _PalletPageState extends State<PalletPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    print("Locations $myLocations");
     Sizes.initSizes(width, height);
     return Scaffold(
       drawer: MyDrawer(),
@@ -63,11 +69,11 @@ class _PalletPageState extends State<PalletPage> {
               ),
               rowPiece(
                   const Text("Ciudad"),
-                  CustomDropDown(
-                      City.getCitiesForDropDown(), currentPallet.locationId,
+                  CustomDropDown(City.getCitiesForDropDown(), currentCityId,
                       (value) {
                     setState(() {
-                      currentPallet.locationId = value;
+                      currentPallet.locationId = null;
+                      currentCityId = value;
                     });
                   })),
               rowPiece(
@@ -94,7 +100,8 @@ class _PalletPageState extends State<PalletPage> {
                   })),
               rowPiece(
                   const Text("Ubicación"),
-                  CustomDropDown(myWarehouses, currentPallet.locationId,
+                  CustomDropDown(
+                      Location.getLocationsFiltered(), currentPallet.locationId,
                       (value) {
                     setState(() {
                       currentPallet.locationId = value;
@@ -102,7 +109,7 @@ class _PalletPageState extends State<PalletPage> {
                   })),
               rowPiece(
                   const Text("Estado"),
-                  CustomDropDown(myStatus, currentPallet.stateId, (value) {
+                  CustomDropDown(myWoodStates, currentPallet.stateId, (value) {
                     setState(() {
                       currentPallet.stateId = value;
                     });
@@ -133,7 +140,7 @@ class _PalletPageState extends State<PalletPage> {
                   : rowPiece(
                       const Text("Lugar de origen"),
                       CustomDropDown(
-                          myWarehouses, currentPallet.originalLocationId,
+                          myLocations, currentPallet.originalLocationId,
                           (value) {
                         setState(() {
                           currentPallet.originalLocationId = value;
@@ -165,23 +172,73 @@ class _PalletPageState extends State<PalletPage> {
                         });
                       }))
                   : Container(),
+              SizedBox(
+                height: Sizes.padding,
+              ),
               CustomButton("Exportar QR", const Color(0xff3D464C), () {
                 // Navigator.of(context).pushNamed("/viewQr");
                 exportAsPdf(currentPallet);
-              }),
+              }, false),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
               CustomButton(widget.creating ? "Crear" : "Actualizar",
-                  const Color(0xff13922C), () {
-                Navigator.of(context).pop();
-              }),
-              SizedBox(
-                height: Sizes.boxSeparation,
-              ),
-              CustomButton("Eliminar", const Color(0xffbc171d), () {
-                Navigator.of(context).pop();
-              }),
+                  const Color(0xff13922C), () async {
+                if (updatingLoading || deletingLoading) {
+                  return;
+                }
+                setState(() {
+                  updatingLoading = true;
+                });
+                if (widget.creating) {
+                  BackendResponse myRes = await Api.createKit(currentPallet);
+                  if (myRes.status == 201) {
+                    setState(() {
+                      widget.creating = false;
+                    });
+                    print("Creado correctamente");
+                  } else {
+                    print("No se pudo crear");
+                  }
+                } else {
+                  BackendResponse myRes =
+                      await Api.updateKit(currentPallet.id, currentPallet);
+                  if (myRes.status == 200) {
+                    print("Actualizado correctamente");
+                  } else {
+                    print("No se pudo actualizar");
+                  }
+                }
+                setState(() {
+                  updatingLoading = false;
+                });
+              }, updatingLoading),
+              widget.creating
+                  ? Container()
+                  : SizedBox(
+                      height: Sizes.boxSeparation,
+                    ),
+              widget.creating
+                  ? Container()
+                  : CustomButton("Eliminar", const Color(0xffbc171d), () async {
+                      if (updatingLoading || deletingLoading) {
+                        return;
+                      }
+                      setState(() {
+                        deletingLoading = true;
+                      });
+                      BackendResponse myRes =
+                          await Api.createKit(currentPallet);
+                      if (myRes.status == 204) {
+                        print("Borrado correctamente");
+                      } else {
+                        print("No se pudo borrar");
+                      }
+                      setState(() {
+                        deletingLoading = false;
+                      });
+                      Navigator.of(context).pop();
+                    }, deletingLoading),
               SizedBox(
                 height: 3 * Sizes.boxSeparation,
               ),

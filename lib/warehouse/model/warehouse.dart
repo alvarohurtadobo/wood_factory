@@ -19,6 +19,13 @@ class Warehouse {
     // countryName =
     //     myCities.where((element) => element.id == cityId).first.country;
   }
+
+  Warehouse.fromBackendResponse(Map<String,dynamic> myRes){
+    id = myRes["id"] ?? 0;
+    name = myRes["name"] ?? "";
+    // warehouseId = myRes["warehouse_id"] ?? 0;
+    
+  }
   String getName() {
     return "$name - Bogota";
   }

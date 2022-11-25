@@ -1,3 +1,5 @@
+import 'package:wood_center/user/model/user.dart';
+
 class Pallet {
   static int lastId = 0;
   int id = 0;
@@ -16,7 +18,9 @@ class Pallet {
 
   DateTime createdAt = DateTime.now();
 
-  Pallet.empty();
+  Pallet.empty(){
+    updatingUserId = myUser.id;
+  }
 
   // Auxiliar
   String productCode = "";
@@ -26,6 +30,32 @@ class Pallet {
   Pallet(this.productId, this.originalLocationId, this.stateId, this.amount) {
     lastId++;
     id = lastId;
+  }
+
+  Map<String, dynamic> toMap(){
+    return {
+      "product_id": productId,
+      "state_id": stateId,
+      "amount":amount,
+      "location_id": locationId,
+      "destiny_location_id":destinyId,
+      "original_location_id": originalLocationId,
+      "external_provider_id": externalProviderId,
+      "employee_id": employeeId,
+      "updating_user_id":updatingUserId,
+      
+    };
+    // "product_id": 2,
+    // "state_id": 2,
+    // "amount": 200,
+    // "location_id": 1,
+    // "destiny_location_id": 2,
+    // "original_location_id": null,
+    // "external_provider_id": 1,
+    // "employee_id": null,
+    // "updating_user_id": 2,
+    // "created_at": "2022-11-22T01:09:32Z",
+    // "updated_at": "2022-11-22T01:09:32Z"
   }
 }
 

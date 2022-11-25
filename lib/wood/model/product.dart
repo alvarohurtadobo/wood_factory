@@ -4,26 +4,57 @@ class Product {
   String code = "";
   String name = "";
   int inventoryTypeId = 0;
-  int lineType = 0;
+  int lineId = 0;
 
-  bool is_wood=false;
+  bool isWood = false;
   double? length;
-  double? width ;
-  double? height ;
+  double? width;
+  double? height;
   String? species;
 
   Product.empty();
 
-  Product(this.code, this.name, this.is_wood) {
+  DateTime? createdAt = DateTime.now();
+  DateTime? updatedAt = DateTime.now();
+
+  Product(this.code, this.name, this.isWood) {
     lastId++;
     id = lastId;
+  }
+
+  Product.fromBackendResponse(Map<String, dynamic> myRes) {
+    id = myRes["id"] ?? 0;
+    name = myRes["name"] ?? "";
+    code = myRes["code"] ?? "";
+    inventoryTypeId = myRes["inventory_type_id"] ?? 0;
+    lineId = myRes["line_id"] ?? 0;
+    isWood = myRes["is_wood"] ?? false;
+    length = double.tryParse(myRes["length"]) ?? 0.00;
+    width = double.tryParse(myRes["width"]) ?? 0.00;
+    height = double.tryParse(myRes["height"]) ?? 0.00;
+    species = myRes["species"];
+    createdAt = DateTime.tryParse(myRes["created_at"]);
+    updatedAt = DateTime.tryParse(myRes["updated_at"]);
+
+    // "id": 1,
+    // "name": "RAPA 1 1/2",
+    // "code": "INEF8001",
+    // "inventory_type_id": 1,
+    // "line_id": 3,
+    // "is_wood": false,
+    // "length": "0.00",
+    // "width": "0.00",
+    // "height": "0.00",
+    // "species": null,
+    // "created_at": "2022-11-22T01:09:32Z",
+    // "updated_at": "2022-11-22T01:09:32Z"
   }
 
   Product.all() {
     id = 0;
     code = "Todos";
   }
-  String getName(){
+  String getName() {
     return "$code - $name";
   }
 
@@ -37,9 +68,9 @@ class Product {
 Product currentProduct = Product.empty();
 
 List<Product> myProducts = [
-  Product("INEF8001", "GRAPA 1 1/2\"", false),
-  Product("INEF8002", "GRAPA 1 3/4\"", true),
-  Product("MPBQ4006", "BLOQUE 150 CM", false),
-  Product("MPMC5001", "CUARTON 120X14.5X8", true),
-  Product("MPMC5014", "CUARTON 100X14.5X8", true),
+  Product("INEF8001", "dGRAPA 1 1/2\"", false),
+  Product("INEF8002", "dGRAPA 1 3/4\"", true),
+  Product("MPBQ4006", "dBLOQUE 150 CM", false),
+  Product("MPMC5001", "dCARTON 120X14.5X8", true),
+  Product("MPMC5014", "dCARTON 100X14.5X8", true),
 ];

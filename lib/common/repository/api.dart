@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:wood_center/wood/model/pallet.dart';
 
 const String serverUrl = "http://10.0.2.2:8000/";
 
@@ -38,23 +39,18 @@ class Api {
   static Future<BackendResponse> _get(String path) async {
     finalUrl = serverUrl + apiPath + path;
 
-    Response response = await dio.get(finalUrl,
-        options: Options(headers: {"Authorization": "Bearer $currentToken"}));
-    // .timeout(Duration(seconds: 30), onTimeout: () {
-    //   return Response("{}", 999);
-    // }).catchError((error) {
-    //   return Response("{}", 666);
-    // });
+    Response response = await dio.get(
+        finalUrl); // options: Options(headers: {"Authorization": "Bearer $currentToken"})
+    return BackendResponse(
+        myBody: response.data, status: response.statusCode ?? 666);
+  }
 
-    Map objectResponse = json.decode(response.data);
-    if (objectResponse["error"] == true) {
-      return BackendResponse(myBody: {}, status: objectResponse["status"]);
-    }
-    if (objectResponse.containsKey("body")) {
-      return BackendResponse(
-          myBody: objectResponse["body"], status: response.statusCode ?? 0);
-    }
-    return BackendResponse(myBody: {}, status: 666);
+  static Future<BackendResponse> _delete(String path) async {
+    finalUrl = serverUrl + apiPath + path;
+
+    Response response = await dio.delete(
+        finalUrl); // options: Options(headers: {"Authorization": "Bearer $currentToken"})
+    return BackendResponse(myBody: {}, status: response.statusCode ?? 666);
   }
 
   static Future<BackendResponse> _postOrPut(String path, Map myBody,
@@ -71,7 +67,7 @@ class Api {
       response = await dio.post(finalUrl,
           options: Options(headers: _getHeader()), data: myBodyString);
     }
-    print("Response: " + response.data.toString());
+    print("Response: ${response.data.toString()}");
     Map<String, dynamic> objectResponse = response.data;
     if (objectResponse["error"] == true) {
       return BackendResponse(myBody: {}, status: response.statusCode ?? 0);
@@ -91,5 +87,33 @@ class Api {
   static Future<BackendResponse> login(String email, String password) async {
     return await Api._post(
         "user/login", {"email": email, "password": password});
+  }
+
+  static Future<BackendResponse> loginEmail(String email) async {
+    return await Api._post("user/login_token", {"email": email});
+  }
+
+  static Future<BackendResponse> getSettings() async {
+    return await Api._get("wood/get_settings");
+  }
+
+  static Future<BackendResponse> getEmployees() async {
+    return await Api._get("user/employees");
+  }
+
+  static Future<BackendResponse> getProviders() async {
+    return await Api._get("user/providers");
+  }
+
+  static Future<BackendResponse> createKit(Pallet myKit) async {
+    return await Api._post("wood/kit", myKit.toMap());
+  }
+
+  static Future<BackendResponse> updateKit(int kitId, Pallet myKit) async {
+    return await Api._put("wood/kit/$kitId", myKit.toMap());
+  }
+
+  static Future<BackendResponse> deleteKit(int kitId, Pallet myKit) async {
+    return await Api._delete("wood/kit/$kitId");
   }
 }
