@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
@@ -12,6 +11,7 @@ import 'package:wood_center/user/model/employee.dart';
 import 'package:wood_center/user/model/provider.dart';
 import 'package:wood_center/wood/model/woodState.dart';
 import 'package:wood_center/warehouse/model/city.dart';
+import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/warehouse/model/location.dart';
 import 'package:wood_center/common/components/button.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
@@ -37,7 +37,7 @@ class _PalletPageState extends State<PalletPage> {
   void initState() {
     super.initState();
     if (widget.creating) {
-      currentPallet = Pallet.empty();
+      currentKit = Pallet.empty();
     }
   }
 
@@ -48,6 +48,7 @@ class _PalletPageState extends State<PalletPage> {
     print("Locations $myLocations");
     Sizes.initSizes(width, height);
     return Scaffold(
+      backgroundColor: Colors.white,
       drawer: MyDrawer(),
       appBar: myAppBar(widget.creating ? "Nuevo Kit" : "Editar Kit"),
       body: SizedBox(
@@ -72,7 +73,7 @@ class _PalletPageState extends State<PalletPage> {
                   CustomDropDown(City.getCitiesForDropDown(), currentCityId,
                       (value) {
                     setState(() {
-                      currentPallet.locationId = null;
+                      currentKit.locationId = null;
                       currentCityId = value;
                     });
                   })),
@@ -93,29 +94,29 @@ class _PalletPageState extends State<PalletPage> {
                       style: TextStyle(fontWeight: FontWeight.bold))),
               rowPiece(
                   const Text("Producto"),
-                  CustomDropDown(myProducts, currentPallet.productId, (value) {
+                  CustomDropDown(myProducts, currentKit.productId, (value) {
                     setState(() {
-                      currentPallet.productId = value;
+                      currentKit.productId = value;
                     });
                   })),
               rowPiece(
                   const Text("Ubicación"),
                   CustomDropDown(
-                      Location.getLocationsFiltered(), currentPallet.locationId,
+                      Location.getLocationsFiltered(), currentKit.locationId,
                       (value) {
                     setState(() {
-                      currentPallet.locationId = value;
+                      currentKit.locationId = value;
                     });
                   })),
               rowPiece(
                   const Text("Estado"),
-                  CustomDropDown(myWoodStates, currentPallet.stateId, (value) {
+                  CustomDropDown(myWoodStates, currentKit.stateId, (value) {
                     setState(() {
-                      currentPallet.stateId = value;
+                      currentKit.stateId = value;
                     });
                   })),
               rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
-                currentPallet.amount = value.toInt();
+                currentKit.amount = value.toInt();
               })),
               SizedBox(
                 height: Sizes.boxSeparation,
@@ -140,10 +141,10 @@ class _PalletPageState extends State<PalletPage> {
                   : rowPiece(
                       const Text("Lugar de origen"),
                       CustomDropDown(
-                          myLocations, currentPallet.originalLocationId,
+                          myLocations, currentKit.originalLocationId,
                           (value) {
                         setState(() {
-                          currentPallet.originalLocationId = value;
+                          currentKit.originalLocationId = value;
                         });
                       })),
               externalProvider
@@ -155,20 +156,20 @@ class _PalletPageState extends State<PalletPage> {
                   ? Container()
                   : rowPiece(
                       const Text("Empleado"),
-                      CustomDropDown(myEmployees, currentPallet.employeeId,
+                      CustomDropDown(myEmployees, currentKit.employeeId,
                           (value) {
                         setState(() {
-                          currentPallet.employeeId = value;
+                          currentKit.employeeId = value;
                         });
                       })),
               externalProvider
                   ? rowPiece(
                       const Text("Nombre"),
                       CustomDropDown(
-                          myProviders, currentPallet.externalProviderId,
+                          myProviders, currentKit.externalProviderId,
                           (value) {
                         setState(() {
-                          currentPallet.externalProviderId = value;
+                          currentKit.externalProviderId = value;
                         });
                       }))
                   : Container(),
@@ -177,7 +178,7 @@ class _PalletPageState extends State<PalletPage> {
               ),
               CustomButton("Exportar QR", const Color(0xff3D464C), () {
                 // Navigator.of(context).pushNamed("/viewQr");
-                exportAsPdf(currentPallet);
+                exportAsPdf(currentKit);
               }, false),
               SizedBox(
                 height: Sizes.boxSeparation,
@@ -191,7 +192,7 @@ class _PalletPageState extends State<PalletPage> {
                   updatingLoading = true;
                 });
                 if (widget.creating) {
-                  BackendResponse myRes = await Api.createKit(currentPallet);
+                  BackendResponse myRes = await Api.createKit(currentKit);
                   if (myRes.status == 201) {
                     setState(() {
                       widget.creating = false;
@@ -202,7 +203,7 @@ class _PalletPageState extends State<PalletPage> {
                   }
                 } else {
                   BackendResponse myRes =
-                      await Api.updateKit(currentPallet.id, currentPallet);
+                      await Api.updateKit(currentKit.id, currentKit);
                   if (myRes.status == 200) {
                     print("Actualizado correctamente");
                   } else {
@@ -228,7 +229,7 @@ class _PalletPageState extends State<PalletPage> {
                         deletingLoading = true;
                       });
                       BackendResponse myRes =
-                          await Api.createKit(currentPallet);
+                          await Api.createKit(currentKit);
                       if (myRes.status == 204) {
                         print("Borrado correctamente");
                       } else {

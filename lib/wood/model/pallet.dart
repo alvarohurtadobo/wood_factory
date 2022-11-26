@@ -18,32 +18,74 @@ class Pallet {
 
   DateTime createdAt = DateTime.now();
 
-  Pallet.empty(){
+  Pallet.empty() {
     updatingUserId = myUser.id;
   }
 
   // Auxiliar
   String productCode = "";
+  String productName = "";
+  bool productIsWood =false;
   String locationName = "";
-  String statusName = "";
+  String warehouseName = "";
+  String woodStatusName = "";
+  double productLength = 0;
+  double productWidth = 0;
+  double productHeight = 0;
+
+  Pallet.fromBackendResponse(Map<String, dynamic> myRes) {
+    id = myRes["id"] ?? 0;
+    amount = myRes["amount"];
+    productId = myRes["product_id"] ?? 0;
+    stateId = myRes["state_id"] ?? 0;
+    locationId = myRes["location_id"] ?? 0;
+    destinyId = myRes["destiny_location_id"] ?? 0;
+    originalLocationId = myRes["original_location_id"] ?? 0;
+    externalProviderId = myRes["external_provider_id"] ?? 0;
+    employeeId = myRes["employee_id"] ?? 0;
+    updatingUserId = myRes["updating_user_id"] ?? 0;
+    productHeight = double.tryParse(myRes["product_height"]) ?? 0.0;
+    productWidth = double.tryParse(myRes["product_width"]) ?? 0.0;
+    productLength = double.tryParse(myRes["product_length"]) ?? 0.0;
+    productCode = myRes["product_code"] ?? "";
+    productName = myRes["product_name"] ?? "";
+    productIsWood = myRes["product_is_wood"] ?? "";
+    locationName = myRes["location_name"] ?? "";
+    warehouseName = myRes["warehouse_name"] ?? "";
+    woodStatusName = myRes["wood_state_name"] ?? "";
+    // "id": 3,
+    // "amount": 200,
+    // "created_at": "2022-11-25T17:26:21.394758Z",
+    // "updated_at": "2022-11-25T17:26:21.394791Z",
+    // "state_id": 2,
+    // "destiny_location_id": 2,
+    // "original_location_id": null,
+    // "external_provider_id": 1,
+    // "employee_id": null,
+    // "updating_user_id": 2,
+    // "product_name": "GRAPA 1 3/4",
+    // "product_length": "0.00",
+    // "product_width": "0.00",
+    // "product_height": "0.00",
+    // "location_name": "B001"
+  }
 
   Pallet(this.productId, this.originalLocationId, this.stateId, this.amount) {
     lastId++;
     id = lastId;
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       "product_id": productId,
       "state_id": stateId,
-      "amount":amount,
+      "amount": amount,
       "location_id": locationId,
-      "destiny_location_id":destinyId,
+      "destiny_location_id": destinyId,
       "original_location_id": originalLocationId,
       "external_provider_id": externalProviderId,
       "employee_id": employeeId,
-      "updating_user_id":updatingUserId,
-      
+      "updating_user_id": updatingUserId,
     };
     // "product_id": 2,
     // "state_id": 2,
@@ -59,8 +101,8 @@ class Pallet {
   }
 }
 
-Pallet currentPallet = Pallet.empty();
-List<Pallet> myPallets = [
+Pallet currentKit = Pallet.empty();
+List<Pallet> myKits = [
   // Pallet(5, 2.5, 120, 30, "INEF8001", "A1 - Bogotá", "Bueno"),
   // Pallet(7.5, 2.5, 240, 1, "INEF8002", "A2 - Bogotá", "Hongos"),
   // Pallet(10, 5, 320, 5, "INEF8003", "D1 - Bogotá", "Torcido"),

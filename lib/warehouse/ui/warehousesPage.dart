@@ -16,6 +16,7 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: myAppBar("Mapa  de sucursales"),
       drawer: MyDrawer(),
       body: Container(

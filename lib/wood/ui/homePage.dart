@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     Sizes.initSizes(width, height);
     return Scaffold(
+      backgroundColor: Colors.white,
         drawer: MyDrawer(),
         appBar: myAppBar("Inicio"),
         body: Container(

@@ -3,7 +3,6 @@ import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/wood/model/pallet.dart';
-import 'package:wood_center/wood/model/product.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -13,65 +12,124 @@ class SearchResultsPage extends StatefulWidget {
 class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   Widget build(BuildContext context) {
+    List<Widget> myList = [SizedBox(height: Sizes.padding)];
+    myList.addAll(myKits.map((e) => palletTile(e)));
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: myAppBar(
         "Resultados de Búsqueda",
       ),
       drawer: MyDrawer(),
-      body: Container(
-        padding: EdgeInsets.only(top: Sizes.padding),
+      body: SizedBox(
         height: Sizes.height,
         width: Sizes.width,
-        child: ListView(children: myPallets.map((e) => palletTile(e)).toList()),
+        child: myKits.isEmpty
+            ? Padding(
+                padding: EdgeInsets.all(Sizes.tileNormal),
+                child: const Text(
+                    "No se encontraron resultados para esta búsqueda"),
+              )
+            : ListView(children: myList),
       ),
     );
   }
 
-  Widget palletTile(Pallet myPallet) {
+  Widget palletTile(Pallet displayKit) {
     double tileWidth = Sizes.width - 2 * Sizes.padding;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed("/updatePallet");
       },
-      child: Container(
+      child: SizedBox(
         width: tileWidth,
-        // height: Sizes.height/8,
-        margin: EdgeInsets.only(
-            left: Sizes.padding,
-            right: Sizes.padding,
-            bottom: Sizes.boxSeparation),
-        padding: EdgeInsets.symmetric(horizontal: Sizes.boxSeparation, vertical: Sizes.boxSeparation/2),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(Sizes.radius)),
-            border: Border.all(color: Colors.black)),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: tileWidth * 0.60,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Producto: ${myPallet.productCode}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                      "${currentProduct.length}cm x${currentProduct.width}cm x${currentProduct.height}cm"),
-                  Text("Ubicación: ${myPallet.locationName}"),
-                ],
+            Expanded(
+              child: Container(
+                // height: Sizes.height/8,
+                margin: EdgeInsets.only(
+                    left: Sizes.padding, bottom: Sizes.boxSeparation),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Sizes.boxSeparation,
+                    vertical: Sizes.boxSeparation / 2),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(Sizes.radius),
+                        bottomLeft: Radius.circular(Sizes.radius)),
+                    border: Border.all(color: Color(0xff343434))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Producto: ${displayKit.productCode}",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff343434)),
+                    ),
+                    Text(
+                      displayKit.productName,
+                      maxLines: 1,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Color(0xff343434)),
+                    ),
+                    displayKit.productIsWood
+                        ? Text(
+                            "${displayKit.productLength}cm x${displayKit.productWidth}cm x${displayKit.productHeight}cm",
+                            maxLines: 1,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xff343434)))
+                        : const Text(""),
+                    SizedBox(
+                      height: Sizes.boxSeparation / 2,
+                    ),
+                    const Text("Ubicación: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff343434))),
+                    Text(
+                        "${displayKit.locationName} - ${displayKit.warehouseName}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Color(0xff343434))),
+                  ],
+                ),
               ),
             ),
-            SizedBox(
-              width: Sizes.boxSeparation,
-            ),
-            SizedBox(
-              width: tileWidth * 0.4 - 4 * Sizes.boxSeparation,
+            Container(
+              width: 0.26 * tileWidth,
+              // height: Sizes.height/8,
+              margin: EdgeInsets.only(
+                  right: Sizes.padding, bottom: Sizes.boxSeparation),
+              padding: EdgeInsets.symmetric(
+                  horizontal: Sizes.boxSeparation,
+                  vertical: Sizes.boxSeparation / 2),
+              decoration: BoxDecoration(
+                  color: const Color(0xffbc171d),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(Sizes.radius),
+                      bottomRight: Radius.circular(Sizes.radius)),
+                  border: Border.all(color: const Color(0xffbc171d))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(myPallet.amount.toString()),
-                  Text(myPallet.statusName.toString()),
-                  const Icon(Icons.edit)
+                  Text(displayKit.amount.toString(),
+                      maxLines: 1,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text(displayKit.woodStatusName.toString(),
+                      maxLines: 1,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.normal, color: Colors.white)),
+                  const Text(""),
+                  const Text(""),
+                  const Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  )
                 ],
               ),
             )

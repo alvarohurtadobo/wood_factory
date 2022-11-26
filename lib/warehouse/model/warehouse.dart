@@ -20,11 +20,10 @@ class Warehouse {
     //     myCities.where((element) => element.id == cityId).first.country;
   }
 
-  Warehouse.fromBackendResponse(Map<String,dynamic> myRes){
+  Warehouse.fromBackendResponse(Map<String, dynamic> myRes) {
     id = myRes["id"] ?? 0;
     name = myRes["name"] ?? "";
     // warehouseId = myRes["warehouse_id"] ?? 0;
-    
   }
   String getName() {
     return "$name - Bogota";
@@ -39,6 +38,17 @@ class Warehouse {
     List<Warehouse> myDropdownWarehouses = [Warehouse.all()];
     myDropdownWarehouses.addAll(myWarehouses);
     return myDropdownWarehouses;
+  }
+
+  static List<Warehouse> getWarehousesForDropDownFilteredByCityId(int? cityId) {
+    List<Warehouse> myDropdownWarehouses = [Warehouse.all()];
+    myDropdownWarehouses.addAll(myWarehouses);
+    if (cityId == 0 || cityId == null) {
+      return myDropdownWarehouses;
+    }
+    return myDropdownWarehouses
+        .where((element) => [cityId,0].contains(element.cityId))
+        .toList();
   }
 }
 

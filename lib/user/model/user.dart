@@ -21,8 +21,7 @@ class User {
     email = myRes["email"] ?? "";
     firstName = myRes["first_name"] ?? "";
     lastName = myRes["last_name"] ?? "";
-    photoUrl = myRes["photo_url"] ??
-        "http://cdn.onlinewebfonts.com/svg/img_569206.png";
+    photoUrl = "http://cdn.onlinewebfonts.com/svg/img_569206.png";
     documentId = myRes["document"] ?? "";
     charge = myRes["charge"] ?? "";
     active = myRes["active"] == true;

@@ -6,12 +6,14 @@ Widget CustomButton(
   return Container(
       margin: EdgeInsets.symmetric(horizontal: Sizes.padding),
       width: double.infinity,
+      height: Sizes.tileNormal,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(Sizes.radius),
       ),
       child: loading
-          ? SizedBox(
+          ? Container(
+            alignment: Alignment.center,
               height: Sizes.padding,
               width: Sizes.padding,
               child: const CircularProgressIndicator(

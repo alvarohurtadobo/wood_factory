@@ -116,4 +116,8 @@ class Api {
   static Future<BackendResponse> deleteKit(int kitId, Pallet myKit) async {
     return await Api._delete("wood/kit/$kitId");
   }
+
+  static Future<BackendResponse> searchKits(Map<String, dynamic> filters) async {
+    return await Api._post("wood/search_kits", filters);
+  }
 }

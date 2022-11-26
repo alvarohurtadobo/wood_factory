@@ -14,13 +14,14 @@ class _QrPageState extends State<QrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       drawer: MyDrawer(),
       appBar: myAppBar("Código Qr"),
       body: Column(children: [
-        Expanded(
+        const Expanded(
             child: Center(
                 // child: QrImage(
-                //   data: currentPallet.id.toString() + "12345678ALVARO",
+                //   data: currentKit.id.toString() + "12345678ALVARO",
                 //   version: QrVersions.auto,
                 //   size: Sizes.initialLogoSide,
                 // ),

@@ -36,6 +36,8 @@ class Product {
     createdAt = DateTime.tryParse(myRes["created_at"]);
     updatedAt = DateTime.tryParse(myRes["updated_at"]);
 
+    // print("Received product $name is wood: $isWood");
+
     // "id": 1,
     // "name": "RAPA 1 1/2",
     // "code": "INEF8001",
@@ -62,6 +64,17 @@ class Product {
     List<Product> myProductsForDropdown = [Product.all()];
     myProductsForDropdown.addAll(myProducts);
     return myProductsForDropdown;
+  }
+
+  static List<Product> getProductListForDropdownFilteredByLineId(lineId) {
+    List<Product> myProductsForDropdown = [Product.all()];
+    myProductsForDropdown.addAll(myProducts);
+    if (lineId == 0 || lineId == null) {
+      return myProductsForDropdown;
+    }
+    return myProductsForDropdown
+        .where((element) => [lineId, 0].contains(element.lineId))
+        .toList();
   }
 }
 

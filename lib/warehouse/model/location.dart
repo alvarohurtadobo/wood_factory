@@ -44,6 +44,17 @@ class Location {
     return myDropdownLocations;
   }
 
+  static List<Location> getLocationsForDropDownFilteredByCityId(int? cityId) {
+    List<Location> myDropdownoLocations = [Location.all()];
+    myDropdownoLocations.addAll(myLocations);
+    if (cityId == 0 || cityId == null) {
+      return myDropdownoLocations;
+    }
+    return myDropdownoLocations
+        .where((element) => [cityId, 0].contains(element.cityId))
+        .toList();
+  }
+
   static List<Location> getLocationsFiltered() {
     if (currentCityId == 0 || currentCityId == null) {
       return myLocations;

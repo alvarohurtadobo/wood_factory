@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/user/model/user.dart';
 import 'package:wood_center/user/model/role.dart';
 import 'package:wood_center/common/model/regEx.dart';
@@ -29,6 +29,7 @@ class LoginPageState extends State<LoginPage> {
     loading  = false; // TODO REmove
 
     return Scaffold(
+      backgroundColor: Colors.white,
         body: Form(
       key: _formKey,
       child: Padding(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/common/ui/appbar.dart';
-import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/user/model/role.dart';
 import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/common/ui/appbar.dart';
+import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/warehouse/model/city.dart';
-import '../../common/components/stringTextInput.dart';
+import 'package:wood_center/common/components/stringTextInput.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -16,6 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: myAppBar("Perfil"),
       drawer: MyDrawer(),
       body: Container(

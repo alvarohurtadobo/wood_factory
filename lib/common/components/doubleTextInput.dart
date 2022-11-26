@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Widget DoubleTextInput(Function(double) updateParam, {bool hasUnits = false}) {
+Widget DoubleTextInput(Function(double) updateParam, {bool hasUnits = false, TextEditingController? controller}) {
   return Container(
     // width: 0.32 * Sizes.width,
     height: Sizes.tileNormal,
     decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xff343434)))),
     child: TextField(
+      controller: controller,
       textAlign: TextAlign.right,
       decoration: InputDecoration(
         isDense: true,

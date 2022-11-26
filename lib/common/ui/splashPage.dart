@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:wood_center/user/bloc/userBloc.dart';
-
-import '../sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/user/bloc/userBloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
@@ -36,6 +35,7 @@ class SplashPageState extends State<SplashPage> {
     double height = MediaQuery.of(context).size.height;
     Sizes.initSizes(width, height);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed("/login");
