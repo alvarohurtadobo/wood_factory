@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Widget DoubleTextInput(Function(double) updateParam, {bool hasUnits = false, TextEditingController? controller}) {
+Widget DoubleTextInput(Function(double) updateParam,
+    {bool hasUnits = false, TextEditingController? controller}) {
   return Container(
     // width: 0.32 * Sizes.width,
     height: Sizes.tileNormal,
@@ -33,6 +34,8 @@ Widget DoubleTextInput(Function(double) updateParam, {bool hasUnits = false, Tex
         double? parsedValue = double.tryParse(value);
         if (parsedValue != null) {
           updateParam(parsedValue);
+        } else {
+          updateParam(0);
         }
       },
       keyboardType:

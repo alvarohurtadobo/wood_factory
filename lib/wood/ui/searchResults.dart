@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/ui/appbar.dart';
@@ -13,6 +14,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> myList = [SizedBox(height: Sizes.padding)];
+    myKits.removeWhere((element) => element.id == deletedKitId);
     myList.addAll(myKits.map((e) => kitTile(e)));
     return Scaffold(
       backgroundColor: Colors.white,
@@ -40,7 +42,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return GestureDetector(
       onTap: () {
         currentKit = displayKit;
-        Navigator.of(context).pushNamed("/updateKit");
+        Navigator.of(context).pushNamed("/updateKit").then((value) {
+          setState(() {});
+        });
       },
       child: SizedBox(
         width: tileWidth,

@@ -55,9 +55,7 @@ class Location {
     if (cityId == 0 || cityId == null) {
       return myLocations;
     }
-    return myLocations
-        .where((element) => element.cityId == cityId)
-        .toList();
+    return myLocations.where((element) => element.cityId == cityId).toList();
   }
 
   @override

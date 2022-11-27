@@ -113,11 +113,12 @@ class Api {
     return await Api._put("wood/kit/$kitId", myKit.toMap());
   }
 
-  static Future<BackendResponse> deleteKit(int kitId, Kit myKit) async {
+  static Future<BackendResponse> deleteKit(int kitId) async {
     return await Api._delete("wood/kit/$kitId");
   }
 
-  static Future<BackendResponse> searchKits(Map<String, dynamic> filters) async {
+  static Future<BackendResponse> searchKits(
+      Map<String, dynamic> filters) async {
     return await Api._post("wood/search_kits", filters);
   }
 
@@ -127,5 +128,9 @@ class Api {
 
   static Future<BackendResponse> getAllWarehouses() async {
     return await Api._get("warehouse/warehouse");
+  }
+
+  static Future<BackendResponse> getExtendedKit(int kitId) async {
+    return await Api._get("wood/kit_expanded/$kitId");
   }
 }

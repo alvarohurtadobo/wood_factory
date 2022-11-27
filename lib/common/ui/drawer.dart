@@ -101,7 +101,7 @@ class MyDrawer extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                     left: Sizes.padding, top: Sizes.boxSeparation),
-                child: Text("Versión 1.0.0",
+                child: Text("Versión 0.9.0",
                     style: TextStyle(
                         color: const Color(0xff4F5051),
                         fontSize: Sizes.font10,

@@ -18,6 +18,15 @@ class Kit {
 
   DateTime createdAt = DateTime.now();
 
+  // Ultimate version
+  String providerFirstName = "";
+  String providerLastName = "";
+  String employeeFirstName = "";
+  String employeeLastName = "";
+
+  String originalLocationName = "";
+  String productSpecies = "";
+
   String describe() {
     return "[PROD] $id, product: $productId, location: $locationId, state: $stateId, amount: $amount, origin: $originalLocationId, employee: $employeeId, provider: $externalProviderId";
   }
@@ -62,6 +71,15 @@ class Kit {
     locationName = myRes["location_name"] ?? "";
     warehouseName = myRes["warehouse_name"] ?? "";
     woodStatusName = myRes["wood_state_name"] ?? "";
+    // Ultimate version
+    providerFirstName = myRes["external_provider_first_name"] ?? "";
+    providerLastName = myRes["external_provider_last_name"] ?? "";
+    employeeFirstName = myRes["employee_first_name"] ?? "";
+    employeeLastName = myRes["employee_last_name"] ?? "";
+
+    originalLocationName = myRes["original_location_name"] ?? "";
+    productSpecies = myRes["product_species"] ?? "";
+
     // "id": 3,
     // "amount": 200,
     // "created_at": "2022-11-25T17:26:21.394758Z",

@@ -50,7 +50,7 @@ class Warehouse {
       return myDropdownWarehouses;
     }
     return myDropdownWarehouses
-        .where((element) => [cityId,0].contains(element.cityId))
+        .where((element) => [cityId, 0].contains(element.cityId))
         .toList();
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/components/toast.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/user/bloc/providersBloc.dart';
 import 'package:wood_center/common/bloc/settingsBloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:wood_center/wood/bloc/kitBloc.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -40,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     Sizes.initSizes(width, height);
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         drawer: MyDrawer(),
         appBar: myAppBar("Inicio"),
         body: Container(
@@ -58,8 +61,31 @@ class _HomePageState extends State<HomePage> {
                         .then((String code) {
                       print("Code is $code");
                       if (code != null && code != "" && code != "-1") {
-                        Navigator.of(context).pushNamed("/updateKit");
+                        int parsedCode =
+                            int.tryParse(code.replaceAll("kit_", "")) ?? 0;
+                        getExtendedKit(parsedCode).then((value) {
+                          Navigator.of(context).pushNamed("/updateKit");
+                        });
                       }
+                    });
+                  },
+                  onLongPress: () {
+                    if (lastKitIdGeneratedQrForDebug == 0) {
+                      return;
+                    }
+                    FlutterBarcodeScanner.scanBarcode(
+                            '#ff6666', 'Cancel', true, ScanMode.QR)
+                        .then((String code) {
+                      int parsedCode = lastKitIdGeneratedQrForDebug + 1;
+                      print("Debug code $parsedCode");
+                      //int.tryParse(code.replaceAll("kit_", "")) ?? 0;
+                      getExtendedKit(parsedCode).then((success) {
+                        if (success) {
+                          Navigator.of(context).pushNamed("/updateKit");
+                        } else {
+                          showToast("Código no encontrado");
+                        }
+                      });
                     });
                   },
                   child: Container(

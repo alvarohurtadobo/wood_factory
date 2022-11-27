@@ -55,7 +55,11 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mi = myProducts.map<int>((e) => e.id,).toList();
+    final mi = myProducts
+        .map<int>(
+          (e) => e.id,
+        )
+        .toList();
     print("Products with filter $mi");
     return Scaffold(
       backgroundColor: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/wood/bloc/kitBloc.dart';
 import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
@@ -35,6 +36,8 @@ class _KitPageState extends State<KitPage> {
   bool deletingLoading = false;
 
   bool loadingProducts = false;
+
+  bool generating = false;
 
   TextEditingController amountController = TextEditingController();
 
@@ -148,9 +151,11 @@ class _KitPageState extends State<KitPage> {
                       currentKit.stateId = value;
                     });
                   })),
-              rowPiece(const Text("Cantidad"), DoubleTextInput((value) {
-                currentKit.amount = value.toInt();
-              }, controller: amountController)),
+              rowPiece(
+                  const Text("Cantidad"),
+                  DoubleTextInput((value) {
+                    currentKit.amount = value.toInt();
+                  }, controller: amountController)),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
@@ -211,10 +216,23 @@ class _KitPageState extends State<KitPage> {
               SizedBox(
                 height: Sizes.padding,
               ),
-              CustomButton("Exportar QR", const Color(0xff3D464C), () {
-                // Navigator.of(context).pushNamed("/viewQr");
-                exportAsPdf(currentKit);
-              }, false),
+              (widget.creating)
+                  ? Container()
+                  : CustomButton("Exportar QR", const Color(0xff3D464C),
+                      () async {
+                      if (generating) {
+                        return;
+                      }
+                      setState(() {
+                        generating = true;
+                      });
+                      await getExtendedKit(currentKit.id);
+                      lastKitIdGeneratedQrForDebug = currentKit.id;
+                      setState(() {
+                        generating = false;
+                      });
+                      exportAsPdf(currentKit);
+                    }, generating),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
@@ -263,8 +281,10 @@ class _KitPageState extends State<KitPage> {
                       setState(() {
                         deletingLoading = true;
                       });
-                      BackendResponse myRes = await Api.createKit(currentKit);
+                      BackendResponse myRes =
+                          await Api.deleteKit(currentKit.id);
                       if (myRes.status == 204) {
+                        deletedKitId = currentKit.id;
                         print("Borrado correctamente");
                       } else {
                         print("No se pudo borrar");
