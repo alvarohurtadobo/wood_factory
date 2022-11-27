@@ -10,6 +10,7 @@ Widget DoubleTextInput(Function(double) updateParam, {bool hasUnits = false, Tex
     child: TextField(
       controller: controller,
       textAlign: TextAlign.right,
+      cursorColor: const Color(0xffbc171d),
       decoration: InputDecoration(
         isDense: true,
         filled: true,

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
+import 'package:wood_center/warehouse/model/city.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
+import 'package:wood_center/warehouse/bloc/warehouseBloc.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
 
 class WarehousesMapPage extends StatefulWidget {
@@ -13,11 +15,32 @@ class WarehousesMapPage extends StatefulWidget {
 
 class _WarehousesMapPageState extends State<WarehousesMapPage> {
   int? currentWarehouseId;
+  bool loading = true;
+  Warehouse? currentWarehouse;
+
+  @override
+  void initState() {
+    super.initState();
+    currentWarehouse = myWarehouses.firstWhere(
+      (thisWarehouse) => thisWarehouse.cityId == myCity.id,
+    );
+    currentWarehouseId = currentWarehouse!.id;
+    getAllWarehouses().then((success) {
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    String currentMapUrl = "";
+    if (currentWarehouseId != null && currentWarehouseId != 0) {
+      currentMapUrl = currentWarehouse!.mapUrl;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: myAppBar("Mapa  de sucursales"),
+      appBar: myAppBar("Mapa  de bodega"),
       drawer: MyDrawer(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
@@ -30,29 +53,45 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
             SizedBox(
               height: Sizes.padding,
             ),
-            const Text("Localizaciones para mi ciudad asignada:"),
+            const Text("Seleccionar la bodega:"),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
-            rowPiece(
-                const Text("Seleccionar"),
-                CustomDropDown(myWarehouses, currentWarehouseId, (value) {
-                  setState(() {
-                    currentWarehouseId = value;
-                  });
-                })),
+            loading
+                ? Center(
+                    child: SizedBox(
+                      height: Sizes.boxSeparation,
+                      width: Sizes.boxSeparation,
+                      child: const CircularProgressIndicator(
+                        color: Color(0xffbc171d),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: CustomDropDown(myWarehouses, currentWarehouseId,
+                        (value) {
+                      setState(() {
+                        currentWarehouseId = value;
+                      });
+                    }, isExpanded: true),
+                  ),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-              width: Sizes.width - 2 * Sizes.padding,
-              height: Sizes.width - 2 * Sizes.padding,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBMwovx42WG251q_cvLdk2yKUglHUoRSEywQ&usqp=CAU"))),
-            )
+            currentMapUrl == ""
+                ? const Expanded(
+                    child: Center(
+                      child: Text("No hay para para esta bodega"),
+                    ),
+                  )
+                : Container(
+                    padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+                    width: Sizes.width - 2 * Sizes.padding,
+                    height: Sizes.width - 2 * Sizes.padding,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(currentMapUrl))),
+                  )
           ],
         ),
       ),

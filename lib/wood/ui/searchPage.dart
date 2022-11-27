@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/wood/bloc/productBloc.dart';
+import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/wood/model/line.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
-import 'package:wood_center/wood/model/pallet.dart';
 import 'package:wood_center/wood/model/product.dart';
 import 'package:wood_center/wood/model/woodState.dart';
 import 'package:wood_center/warehouse/model/city.dart';
@@ -36,6 +37,8 @@ class _SearchPageState extends State<SearchPage> {
   bool loading = false;
   int amountMin = 0;
 
+  bool loadingProducts = false;
+
   TextEditingController lengthController = TextEditingController();
   TextEditingController widthController = TextEditingController();
   TextEditingController heightController = TextEditingController();
@@ -52,6 +55,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mi = myProducts.map<int>((e) => e.id,).toList();
+    print("Products with filter $mi");
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: MyDrawer(),
@@ -75,18 +80,30 @@ class _SearchPageState extends State<SearchPage> {
               rowPiece(
                   const Text("Ciudad"),
                   CustomDropDown(City.getCitiesForDropDown(), currentCityId,
-                      (value) {
+                      (value) async {
                     setState(() {
-                      currentLocationId = null;
+                      loadingProducts = true;
+                      // My value is set and the values of the dropdowns that rely on me are clear
                       currentCityId = value;
+                      currentLocationId = null;
+                      currentProductId = null;
                     });
-
+                    filters.remove("location_id");
+                    filters.remove("product_id");
                     if (currentCityId != 0 && currentCityId != null) {
                       filters["city_id"] = currentCityId;
                     } else {
                       filters.remove("city_id");
-                      filters.remove("location_id");
                     }
+                    bool success =
+                        await getProductsForCityAndUpdateAllLocalProducts(
+                            currentCityId);
+                    if (!success) {
+                      print("Unable to load products");
+                    }
+                    setState(() {
+                      loadingProducts = false;
+                    });
                   })),
               rowPiece(
                   const Text("Ubicación"),
@@ -113,7 +130,7 @@ class _SearchPageState extends State<SearchPage> {
                         fontWeight: FontWeight.bold, color: Color(0xff3D464C))),
               ),
               rowPiece(
-                  const Text("Familia"),
+                  const Text("Línea"),
                   CustomDropDown(Line.getLineListForDropdown(), currentLineId,
                       (value) {
                     setState(() {
@@ -124,28 +141,41 @@ class _SearchPageState extends State<SearchPage> {
                   })),
               rowPiece(
                   const Text("Producto"),
-                  CustomDropDown(
-                      Product.getProductListForDropdownFilteredByLineId(
-                          currentLineId),
-                      currentProductId, (value) {
-                    currentProductId = value;
-                    if (currentProductId == 0 || currentProductId == null) {
-                      // If no product selected we show the filter for dimensions
-                      currentProductIdWood = true;
-                    } else {
-                      // If one is selected we show dimensions filter only if it is wood
-                      currentProductIdWood = myProducts
-                          .firstWhere(
-                              (element) => element.id == currentProductId)
-                          .isWood;
-                    }
-                    setState(() {});
-                    if (currentProductId != null && currentProductId != 0) {
-                      filters["product_id"] = currentProductId;
-                    } else {
-                      filters.remove("product_id");
-                    }
-                  })),
+                  loadingProducts
+                      ? Center(
+                          child: SizedBox(
+                            height: Sizes.boxSeparation,
+                            width: Sizes.boxSeparation,
+                            child: const CircularProgressIndicator(
+                              color: Color(0xffbc171d),
+                            ),
+                          ),
+                        )
+                      : CustomDropDown(
+                          Product
+                              .getProductListForDropdownFilteredByLineIdAndCityId(
+                                  currentLineId, currentCityId),
+                          currentProductId, (value) {
+                          currentProductId = value;
+                          if (currentProductId == 0 ||
+                              currentProductId == null) {
+                            // If no product selected we show the filter for dimensions
+                            currentProductIdWood = true;
+                          } else {
+                            // If one is selected we show dimensions filter only if it is wood
+                            currentProductIdWood = myProducts
+                                .firstWhere(
+                                    (element) => element.id == currentProductId)
+                                .isWood;
+                          }
+                          setState(() {});
+                          if (currentProductId != null &&
+                              currentProductId != 0) {
+                            filters["product_id"] = currentProductId;
+                          } else {
+                            filters.remove("product_id");
+                          }
+                        })),
               rowPiece(
                   const Text("Estado"),
                   CustomDropDown(
@@ -322,8 +352,7 @@ class _SearchPageState extends State<SearchPage> {
                 }
                 if (myRes.myBody.containsKey("kits")) {
                   myKits = myRes.myBody["kits"]
-                      .map<Pallet>(
-                          (kitRes) => Pallet.fromBackendResponse(kitRes))
+                      .map<Kit>((kitRes) => Kit.fromBackendResponse(kitRes))
                       .toList();
                   // if(myKits.length==0){
                   //   return;

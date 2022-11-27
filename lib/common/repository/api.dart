@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:wood_center/wood/model/pallet.dart';
+import 'package:wood_center/wood/model/kit.dart';
 
 const String serverUrl = "http://10.0.2.2:8000/";
 
@@ -105,19 +105,27 @@ class Api {
     return await Api._get("user/providers");
   }
 
-  static Future<BackendResponse> createKit(Pallet myKit) async {
+  static Future<BackendResponse> createKit(Kit myKit) async {
     return await Api._post("wood/kit", myKit.toMap());
   }
 
-  static Future<BackendResponse> updateKit(int kitId, Pallet myKit) async {
+  static Future<BackendResponse> updateKit(int kitId, Kit myKit) async {
     return await Api._put("wood/kit/$kitId", myKit.toMap());
   }
 
-  static Future<BackendResponse> deleteKit(int kitId, Pallet myKit) async {
+  static Future<BackendResponse> deleteKit(int kitId, Kit myKit) async {
     return await Api._delete("wood/kit/$kitId");
   }
 
   static Future<BackendResponse> searchKits(Map<String, dynamic> filters) async {
     return await Api._post("wood/search_kits", filters);
+  }
+
+  static Future<BackendResponse> getProductsForCity(int cityId) async {
+    return await Api._get("wood/products_by_city/$cityId");
+  }
+
+  static Future<BackendResponse> getAllWarehouses() async {
+    return await Api._get("warehouse/warehouse");
   }
 }

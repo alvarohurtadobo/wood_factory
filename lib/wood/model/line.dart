@@ -10,7 +10,7 @@ class Line {
 
   Line.all(){
     id=0;
-    name="Todas";
+    name="Todos";
   }
 
   Line.fromBackendResponse(Map<String, dynamic> myRes){

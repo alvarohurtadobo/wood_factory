@@ -1,4 +1,3 @@
-import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
 
 class Location {
@@ -11,11 +10,8 @@ class Location {
   Location(this.name) {
     lastId++;
     id = lastId;
-    warehouseId = id % myWarehouses.length;
+    warehouseId = warehouseId;
     cityId = warehouseId;
-    // cityName = myCities.where((element) => element.id == cityId).first.name;
-    // countryName =
-    //     myCities.where((element) => element.id == cityId).first.country;
   }
 
   Location.fromBackendResponse(Map<String, dynamic> myRes) {
@@ -55,12 +51,12 @@ class Location {
         .toList();
   }
 
-  static List<Location> getLocationsFiltered() {
-    if (currentCityId == 0 || currentCityId == null) {
+  static List<Location> getLocationsFilteredByCityId(int? cityId) {
+    if (cityId == 0 || cityId == null) {
       return myLocations;
     }
     return myLocations
-        .where((element) => element.cityId == currentCityId)
+        .where((element) => element.cityId == cityId)
         .toList();
   }
 

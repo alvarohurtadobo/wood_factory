@@ -1,6 +1,6 @@
 import 'package:wood_center/user/model/user.dart';
 
-class Pallet {
+class Kit {
   static int lastId = 0;
   int id = 0;
   int? productId;
@@ -18,14 +18,18 @@ class Pallet {
 
   DateTime createdAt = DateTime.now();
 
-  Pallet.empty() {
+  String describe() {
+    return "[PROD] $id, product: $productId, location: $locationId, state: $stateId, amount: $amount, origin: $originalLocationId, employee: $employeeId, provider: $externalProviderId";
+  }
+
+  Kit.empty() {
     updatingUserId = myUser.id;
   }
 
   // Auxiliar
   String productCode = "";
   String productName = "";
-  bool productIsWood =false;
+  bool productIsWood = false;
   String locationName = "";
   String warehouseName = "";
   String woodStatusName = "";
@@ -33,16 +37,21 @@ class Pallet {
   double productWidth = 0;
   double productHeight = 0;
 
-  Pallet.fromBackendResponse(Map<String, dynamic> myRes) {
+  bool isFromExternalProvider() {
+    return externalProviderId !=
+        null; // ||(employeeId == null && originalLocationId == null) ;
+  }
+
+  Kit.fromBackendResponse(Map<String, dynamic> myRes) {
     id = myRes["id"] ?? 0;
     amount = myRes["amount"];
     productId = myRes["product_id"] ?? 0;
     stateId = myRes["state_id"] ?? 0;
     locationId = myRes["location_id"] ?? 0;
-    destinyId = myRes["destiny_location_id"] ?? 0;
-    originalLocationId = myRes["original_location_id"] ?? 0;
-    externalProviderId = myRes["external_provider_id"] ?? 0;
-    employeeId = myRes["employee_id"] ?? 0;
+    destinyId = myRes["destiny_location_id"];
+    originalLocationId = myRes["original_location_id"];
+    externalProviderId = myRes["external_provider_id"];
+    employeeId = myRes["employee_id"];
     updatingUserId = myRes["updating_user_id"] ?? 0;
     productHeight = double.tryParse(myRes["product_height"]) ?? 0.0;
     productWidth = double.tryParse(myRes["product_width"]) ?? 0.0;
@@ -70,7 +79,7 @@ class Pallet {
     // "location_name": "B001"
   }
 
-  Pallet(this.productId, this.originalLocationId, this.stateId, this.amount) {
+  Kit(this.productId, this.originalLocationId, this.stateId, this.amount) {
     lastId++;
     id = lastId;
   }
@@ -101,10 +110,10 @@ class Pallet {
   }
 }
 
-Pallet currentKit = Pallet.empty();
-List<Pallet> myKits = [
-  // Pallet(5, 2.5, 120, 30, "INEF8001", "A1 - Bogotá", "Bueno"),
-  // Pallet(7.5, 2.5, 240, 1, "INEF8002", "A2 - Bogotá", "Hongos"),
-  // Pallet(10, 5, 320, 5, "INEF8003", "D1 - Bogotá", "Torcido"),
-  // Pallet(20, 12.5, 500, 10, "INEF8004", "B1 - Medellín", "Bueno"),
+Kit currentKit = Kit.empty();
+List<Kit> myKits = [
+  // Kit(5, 2.5, 120, 30, "INEF8001", "A1 - Bogotá", "Bueno"),
+  // Kit(7.5, 2.5, 240, 1, "INEF8002", "A2 - Bogotá", "Hongos"),
+  // Kit(10, 5, 320, 5, "INEF8003", "D1 - Bogotá", "Torcido"),
+  // Kit(20, 12.5, 500, 10, "INEF8004", "B1 - Medellín", "Bueno"),
 ];

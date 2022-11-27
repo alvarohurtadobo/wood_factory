@@ -23,10 +23,13 @@ class Warehouse {
   Warehouse.fromBackendResponse(Map<String, dynamic> myRes) {
     id = myRes["id"] ?? 0;
     name = myRes["name"] ?? "";
-    // warehouseId = myRes["warehouse_id"] ?? 0;
+    cityId = myRes["city_id"] ?? 0;
+    mapUrl = myRes["map_url"] ?? "";
+    cityName = myRes["city_name"] ?? "";
   }
+
   String getName() {
-    return "$name - Bogota";
+    return "$name - $cityName";
   }
 
   Warehouse.all() {

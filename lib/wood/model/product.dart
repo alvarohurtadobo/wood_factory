@@ -14,6 +14,9 @@ class Product {
 
   Product.empty();
 
+  // Auxiliar
+  int cityId = 0;
+
   DateTime? createdAt = DateTime.now();
   DateTime? updatedAt = DateTime.now();
 
@@ -22,7 +25,7 @@ class Product {
     id = lastId;
   }
 
-  Product.fromBackendResponse(Map<String, dynamic> myRes) {
+  Product.fromBackendResponse(Map<String, dynamic> myRes, {int receivedCityId = 0}) {
     id = myRes["id"] ?? 0;
     name = myRes["name"] ?? "";
     code = myRes["code"] ?? "";
@@ -35,21 +38,7 @@ class Product {
     species = myRes["species"];
     createdAt = DateTime.tryParse(myRes["created_at"]);
     updatedAt = DateTime.tryParse(myRes["updated_at"]);
-
-    // print("Received product $name is wood: $isWood");
-
-    // "id": 1,
-    // "name": "RAPA 1 1/2",
-    // "code": "INEF8001",
-    // "inventory_type_id": 1,
-    // "line_id": 3,
-    // "is_wood": false,
-    // "length": "0.00",
-    // "width": "0.00",
-    // "height": "0.00",
-    // "species": null,
-    // "created_at": "2022-11-22T01:09:32Z",
-    // "updated_at": "2022-11-22T01:09:32Z"
+    cityId = receivedCityId;
   }
 
   Product.all() {
@@ -66,15 +55,26 @@ class Product {
     return myProductsForDropdown;
   }
 
-  static List<Product> getProductListForDropdownFilteredByLineId(lineId) {
+  static List<Product> getProductListForDropdownFilteredByLineIdAndCityId(int? lineId, int? cityId) {
     List<Product> myProductsForDropdown = [Product.all()];
-    myProductsForDropdown.addAll(myProducts);
-    if (lineId == 0 || lineId == null) {
-      return myProductsForDropdown;
-    }
-    return myProductsForDropdown
-        .where((element) => [lineId, 0].contains(element.lineId))
+    List<Product> filteredProducts = Product.getProductListFilteredByLineIdAndCityId(lineId, cityId);
+    myProductsForDropdown.addAll(filteredProducts);
+    return myProductsForDropdown;
+  }
+
+  static List<Product> getProductListFilteredByLineIdAndCityId(int? lineId, int? cityId) {
+    List<Product> myProductsForDropdown = myProducts;
+    if (lineId != 0 && lineId != null) {
+      myProductsForDropdown =  myProductsForDropdown
+        .where((thisProduct) => thisProduct.lineId==lineId)
         .toList();
+    }
+    if (cityId != 0 && cityId != null) {
+      myProductsForDropdown =  myProductsForDropdown
+        .where((thisProduct) => thisProduct.cityId==cityId)
+        .toList();
+    }
+    return myProductsForDropdown;
   }
 }
 

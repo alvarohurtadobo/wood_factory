@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/ui/appbar.dart';
-import 'package:wood_center/user/ui/profilePage.dart';
-import 'package:wood_center/wood/ui/homePage.dart';
 import 'package:wood_center/wood/ui/qrPage.dart';
+import 'package:wood_center/wood/ui/kitPage.dart';
+import 'package:wood_center/wood/ui/homePage.dart';
 import 'package:wood_center/wood/ui/scanPage.dart';
+import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/user/ui/loginPage.dart';
-import 'package:wood_center/wood/ui/palletPage.dart';
-import 'package:wood_center/common/ui/splashPage.dart';
-import 'package:wood_center/warehouse/ui/warehousesPage.dart';
 import 'package:wood_center/wood/ui/searchPage.dart';
+import 'package:wood_center/user/ui/profilePage.dart';
+import 'package:wood_center/common/ui/splashPage.dart';
 import 'package:wood_center/wood/ui/searchResults.dart';
+import 'package:wood_center/warehouse/ui/warehousesPage.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -23,13 +23,13 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomePage());
       case "/scan":
         return MaterialPageRoute(builder: (_) => ScanPage());
-      case "/createPallet":
+      case "/createKit":
         return MaterialPageRoute(
-          builder: (_) => PalletPage(creating: true),
+          builder: (_) => KitPage(creating: true),
         );
-      case "/updatePallet":
+      case "/updateKit":
         return MaterialPageRoute(
-          builder: (_) => PalletPage(creating: false),
+          builder: (_) => KitPage(creating: false),
         );
       case "/viewQr":
         return MaterialPageRoute(

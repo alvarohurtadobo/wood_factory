@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
-import 'package:wood_center/wood/model/pallet.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> myList = [SizedBox(height: Sizes.padding)];
-    myList.addAll(myKits.map((e) => palletTile(e)));
+    myList.addAll(myKits.map((e) => kitTile(e)));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: myAppBar(
@@ -34,11 +34,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     );
   }
 
-  Widget palletTile(Pallet displayKit) {
+  Widget kitTile(Kit displayKit) {
     double tileWidth = Sizes.width - 2 * Sizes.padding;
+    // print("Building tile for kit ${displ}")
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed("/updatePallet");
+        currentKit = displayKit;
+        Navigator.of(context).pushNamed("/updateKit");
       },
       child: SizedBox(
         width: tileWidth,

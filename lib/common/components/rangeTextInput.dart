@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
 Widget DoubleRangeTextInput(Function(double) updateParam,
-    {bool hasUnits = false, TextEditingController? controllerLeft, TextEditingController? controllerRight}) {
+    {bool hasUnits = false,
+    TextEditingController? controllerLeft,
+    TextEditingController? controllerRight}) {
   return Row(
     children: [
       Padding(
@@ -15,6 +17,7 @@ Widget DoubleRangeTextInput(Function(double) updateParam,
             border: Border(bottom: BorderSide(color: Color(0xff343434)))),
         child: TextField(
           controller: controllerLeft,
+          cursorColor: const Color(0xffbc171d),
           decoration: InputDecoration(
             isDense: true,
             filled: true,
@@ -54,6 +57,7 @@ Widget DoubleRangeTextInput(Function(double) updateParam,
             border: Border(bottom: BorderSide(color: Color(0xff343434)))),
         child: TextField(
           controller: controllerRight,
+          cursorColor: const Color(0xffbc171d),
           decoration: InputDecoration(
             isDense: true,
             filled: true,

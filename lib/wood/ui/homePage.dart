@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                         .then((String code) {
                       print("Code is $code");
                       if (code != null && code != "" && code != "-1") {
-                        Navigator.of(context).pushNamed("/updatePallet");
+                        Navigator.of(context).pushNamed("/updateKit");
                       }
                     });
                   },
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   if (!fullyLoaded) {
                     return;
                   }
-                  Navigator.of(context).pushNamed("/createPallet");
+                  Navigator.of(context).pushNamed("/createKit");
                 },
                 child: Container(
                     width: Sizes.bigButtonSize,
