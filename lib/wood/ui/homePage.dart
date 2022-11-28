@@ -7,6 +7,7 @@ import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/user/bloc/providersBloc.dart';
 import 'package:wood_center/common/bloc/settingsBloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:wood_center/user/model/roleManagement.dart';
 import 'package:wood_center/wood/bloc/kitBloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,11 +47,11 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         drawer: MyDrawer(),
         appBar: myAppBar("Inicio"),
-        body: Container(
+        body: SizedBox(
           width: Sizes.width,
           // color: const Color(0xff2E1AA4),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
@@ -111,36 +112,40 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   )),
-              GestureDetector(
-                onTap: () {
-                  if (!fullyLoaded) {
-                    return;
-                  }
-                  Navigator.of(context).pushNamed("/createKit");
-                },
-                child: Container(
-                    width: Sizes.bigButtonSize,
-                    height: Sizes.bigButtonSize,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: const Color(0xff343434),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(Sizes.bigButtonSize / 6))),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.format_indent_increase_sharp,
-                          color: Colors.white,
-                          size: Sizes.bigButtonSize / 2,
-                        ),
-                        Text("Nuevo Ingreso",
-                            style: TextStyle(
-                                color:
-                                    fullyLoaded ? Colors.white : Colors.grey)),
-                      ],
-                    )),
-              ),
+              canCreateKits()
+                  ? GestureDetector(
+                      onTap: () {
+                        if (!fullyLoaded) {
+                          return;
+                        }
+                        Navigator.of(context).pushNamed("/createKit");
+                      },
+                      child: Container(
+                          width: Sizes.bigButtonSize,
+                          height: Sizes.bigButtonSize,
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: Sizes.padding * 2),
+                          decoration: BoxDecoration(
+                              color: const Color(0xff343434),
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(Sizes.bigButtonSize / 6))),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.format_indent_increase_sharp,
+                                color: Colors.white,
+                                size: Sizes.bigButtonSize / 2,
+                              ),
+                              Text("Nuevo Ingreso",
+                                  style: TextStyle(
+                                      color: fullyLoaded
+                                          ? Colors.white
+                                          : Colors.grey)),
+                            ],
+                          )),
+                    )
+                  : Container(),
             ],
           ),
         ));

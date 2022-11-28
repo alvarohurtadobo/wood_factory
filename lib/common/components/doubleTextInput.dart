@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
 Widget DoubleTextInput(Function(double) updateParam,
-    {bool hasUnits = false, TextEditingController? controller}) {
+    {bool hasUnits = false, TextEditingController? controller, bool enabled=true}) {
   return Container(
     // width: 0.32 * Sizes.width,
     height: Sizes.tileNormal,
@@ -30,6 +30,7 @@ Widget DoubleTextInput(Function(double) updateParam,
         suffix: hasUnits ? const Text("cm") : null,
         disabledBorder: null,
       ),
+      enabled: enabled,
       onChanged: (value) {
         double? parsedValue = double.tryParse(value);
         if (parsedValue != null) {

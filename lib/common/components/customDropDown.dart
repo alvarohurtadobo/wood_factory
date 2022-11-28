@@ -3,7 +3,7 @@ import 'package:wood_center/common/sizes.dart';
 
 Widget CustomDropDown(
     List<dynamic> myList, int? myValue, Function(int?) updateValue,
-    {bool isExpanded = false}) {
+    {bool isExpanded = false, bool enabled = true}) {
   List<int> myValues = myList.map<int>((e) => e.id).toList();
   print("Dropdown initial $myValue in $myValues");
   return Container(
@@ -27,11 +27,11 @@ Widget CustomDropDown(
                         height: Sizes.tileNormal*0.6,
                         child: Text(
                           e.getName(),
-                          maxLines: 2,
+                          maxLines: 1,
                         )),
                   ),
                 ))
             .toList(),
-        onChanged: updateValue),
+        onChanged: enabled?updateValue:null),
   );
 }

@@ -3,8 +3,8 @@ import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 import 'package:wood_center/warehouse/model/city.dart';
+import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
-import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/warehouse/bloc/warehouseBloc.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
 
@@ -38,6 +38,7 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
     if (currentWarehouseId != null && currentWarehouseId != 0) {
       currentMapUrl = currentWarehouse!.mapUrl;
     }
+    print("Show ${serverUrl + currentMapUrl}");
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: myAppBar("Mapa  de bodega"),
@@ -72,6 +73,8 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
                         (value) {
                       setState(() {
                         currentWarehouseId = value;
+                        currentWarehouse = myWarehouses.firstWhere(
+                            (element) => element.id == currentWarehouseId);
                       });
                     }, isExpanded: true),
                   ),
@@ -90,7 +93,7 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
                     height: Sizes.width - 2 * Sizes.padding,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(currentMapUrl))),
+                            image: NetworkImage(serverUrl + currentMapUrl))),
                   )
           ],
         ),

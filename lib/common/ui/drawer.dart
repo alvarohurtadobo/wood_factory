@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/user/model/role.dart';
 import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/common/repository/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wood_center/common/ui/genericConfirmationDialog.dart';
 
@@ -12,6 +13,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("URL ${serverUrl + myUser.photoUrl}");
     return Drawer(
       backgroundColor: const Color(0xffbc171d),
       child: SafeArea(
@@ -43,7 +45,8 @@ class MyDrawer extends StatelessWidget {
                             borderRadius: BorderRadius.all(
                                 Radius.circular(Sizes.width / 10.8)),
                             image: DecorationImage(
-                                image: NetworkImage(myUser.photoUrl),
+                                image:
+                                    NetworkImage(serverUrl + myUser.photoUrl),
                                 fit: BoxFit.cover)),
                       ),
                       SizedBox(width: Sizes.boxSeparation),

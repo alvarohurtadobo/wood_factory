@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/wood/bloc/kitBloc.dart';
 import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
+import 'package:wood_center/wood/bloc/kitBloc.dart';
 import 'package:wood_center/wood/pdf/createPdf.dart';
 import 'package:wood_center/wood/model/product.dart';
 import 'package:wood_center/user/model/employee.dart';
@@ -16,6 +16,7 @@ import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/wood/bloc/productBloc.dart';
 import 'package:wood_center/warehouse/model/location.dart';
 import 'package:wood_center/common/components/button.dart';
+import 'package:wood_center/user/model/roleManagement.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
 import 'package:wood_center/common/components/doubleTextInput.dart';
@@ -39,6 +40,8 @@ class _KitPageState extends State<KitPage> {
 
   bool generating = false;
 
+  bool problemMismatchInDropdown = false;
+
   TextEditingController amountController = TextEditingController();
 
   @override
@@ -48,6 +51,9 @@ class _KitPageState extends State<KitPage> {
     amountController.text = currentKit.amount.toString();
     if (widget.creating) {
       currentKit = Kit.empty();
+    } else {
+      currentCityId = null;
+      currentLineId = null;
     }
   }
 
@@ -71,46 +77,56 @@ class _KitPageState extends State<KitPage> {
               SizedBox(
                 height: Sizes.padding,
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                child: const Text(
-                  "FILTROS",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              rowPiece(
-                  const Text("Ciudad"),
-                  CustomDropDown(City.getCitiesForDropDown(), currentCityId,
-                      (value) async {
-                    setState(() {
-                      loadingProducts = true;
-                      // My value is set and the values of the dropdowns that rely on me are clear
-                      currentCityId = value;
-                      currentKit.productId = null;
-                      currentKit.locationId = null;
-                    });
-                    bool success =
-                        await getProductsForCityAndUpdateAllLocalProducts(
-                            currentCityId);
-                    if (!success) {
-                      print("Unable to load products");
-                    }
-                    setState(() {
-                      loadingProducts = false;
-                    });
-                  })),
-              rowPiece(
-                  const Text("Línea"),
-                  CustomDropDown(Line.getLineListForDropdown(), currentLineId,
-                      (value) {
-                    setState(() {
-                      currentKit.productId = null;
-                      currentLineId = value;
-                    });
-                  })),
-              SizedBox(
-                height: Sizes.padding,
-              ),
+              (!widget.creating)
+                  ? Container()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: Sizes.padding),
+                          child: const Text(
+                            "FILTROS",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        rowPiece(
+                            const Text("Ciudad"),
+                            CustomDropDown(
+                                City.getCitiesForDropDown(), currentCityId,
+                                (value) async {
+                              setState(() {
+                                loadingProducts = true;
+                                // My value is set and the values of the dropdowns that rely on me are clear
+                                currentCityId = value;
+                                currentKit.productId = null;
+                                currentKit.locationId = null;
+                              });
+                              bool success =
+                                  await getProductsForCityAndUpdateAllLocalProducts(
+                                      currentCityId);
+                              if (!success) {
+                                print("Unable to load products");
+                              }
+                              setState(() {
+                                loadingProducts = false;
+                              });
+                            })),
+                        rowPiece(
+                            const Text("Línea"),
+                            CustomDropDown(
+                                Line.getLineListForDropdown(), currentLineId,
+                                (value) {
+                              setState(() {
+                                currentKit.productId = null;
+                                currentLineId = value;
+                              });
+                            })),
+                        SizedBox(
+                          height: Sizes.padding,
+                        ),
+                      ],
+                    ),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
                   child: const Text("INFORMACIÓN DEL KIT",
@@ -134,7 +150,7 @@ class _KitPageState extends State<KitPage> {
                           setState(() {
                             currentKit.productId = value;
                           });
-                        })),
+                        }, enabled: widget.creating || canUpdateProduct())),
               rowPiece(
                   const Text("Ubicación"),
                   CustomDropDown(
@@ -143,19 +159,21 @@ class _KitPageState extends State<KitPage> {
                     setState(() {
                       currentKit.locationId = value;
                     });
-                  })),
+                  }, enabled: widget.creating || canUpdateLocation())),
               rowPiece(
                   const Text("Estado"),
                   CustomDropDown(myWoodStates, currentKit.stateId, (value) {
                     setState(() {
                       currentKit.stateId = value;
                     });
-                  })),
+                  }, enabled: widget.creating || canUpdateState())),
               rowPiece(
                   const Text("Cantidad"),
                   DoubleTextInput((value) {
                     currentKit.amount = value.toInt();
-                  }, controller: amountController)),
+                  },
+                      controller: amountController,
+                      enabled: widget.creating || canUpdateAmoun())),
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
@@ -166,14 +184,18 @@ class _KitPageState extends State<KitPage> {
                     child: Switch(
                         value: externalProvider,
                         activeColor: const Color(0xffbc171d),
-                        onChanged: (value) {
-                          setState(() {
-                            currentKit.originalLocationId = null;
-                            currentKit.employeeId = null;
-                            currentKit.externalProviderId = null;
-                            externalProvider = value;
-                          });
-                        }),
+                        onChanged: (widget.creating || canUpdateProduct())
+                            ? (value) {
+                                setState(() {
+                                  if (widget.creating) {
+                                    currentKit.originalLocationId = null;
+                                    currentKit.employeeId = null;
+                                    currentKit.externalProviderId = null;
+                                  }
+                                  externalProvider = value;
+                                });
+                              }
+                            : null),
                   )),
               SizedBox(
                 height: Sizes.boxSeparation,
@@ -187,7 +209,9 @@ class _KitPageState extends State<KitPage> {
                         setState(() {
                           currentKit.originalLocationId = value;
                         });
-                      })),
+                      },
+                          enabled: widget.creating ||
+                              canUpdateOriginProviderEmployee())),
               externalProvider
                   ? Container()
                   : SizedBox(
@@ -202,7 +226,9 @@ class _KitPageState extends State<KitPage> {
                         setState(() {
                           currentKit.employeeId = value;
                         });
-                      })),
+                      },
+                          enabled: widget.creating ||
+                              canUpdateOriginProviderEmployee())),
               externalProvider
                   ? rowPiece(
                       const Text("Nombre"),
@@ -211,7 +237,9 @@ class _KitPageState extends State<KitPage> {
                         setState(() {
                           currentKit.externalProviderId = value;
                         });
-                      }))
+                      },
+                          enabled: widget.creating ||
+                              canUpdateOriginProviderEmployee()))
                   : Container(),
               SizedBox(
                 height: Sizes.padding,
@@ -236,45 +264,46 @@ class _KitPageState extends State<KitPage> {
               SizedBox(
                 height: Sizes.boxSeparation,
               ),
-              CustomButton(widget.creating ? "Crear" : "Actualizar",
-                  const Color(0xff13922C), () async {
-                if (updatingLoading || deletingLoading) {
-                  return;
-                }
-                setState(() {
-                  updatingLoading = true;
-                });
-                if (widget.creating) {
-                  BackendResponse myRes = await Api.createKit(currentKit);
-                  if (myRes.status == 201) {
-                    setState(() {
-                      widget.creating = false;
-                    });
-                    print("Creado correctamente");
-                  } else {
-                    print("No se pudo crear");
-                  }
-                } else {
-                  BackendResponse myRes =
-                      await Api.updateKit(currentKit.id, currentKit);
-                  if (myRes.status == 200) {
-                    print("Actualizado correctamente");
-                  } else {
-                    print("No se pudo actualizar");
-                  }
-                }
-                setState(() {
-                  updatingLoading = false;
-                });
-              }, updatingLoading),
+              (!widget.creating && !canUpdateAnything())
+                  ? Container()
+                  : CustomButton(widget.creating ? "Crear" : "Actualizar",
+                      const Color(0xff13922C), () async {
+                      if (updatingLoading || deletingLoading) {
+                        return;
+                      }
+                      setState(() {
+                        updatingLoading = true;
+                      });
+                      if (widget.creating) {
+                        BackendResponse myRes = await Api.createKit(currentKit);
+                        if (myRes.status == 201) {
+                          setState(() {
+                            widget.creating = false;
+                          });
+                          print("Creado correctamente");
+                        } else {
+                          print("No se pudo crear");
+                        }
+                      } else {
+                        BackendResponse myRes =
+                            await Api.updateKit(currentKit.id, currentKit);
+                        if (myRes.status == 200) {
+                          print("Actualizado correctamente");
+                        } else {
+                          print("No se pudo actualizar");
+                        }
+                      }
+                      setState(() {
+                        updatingLoading = false;
+                      });
+                    }, updatingLoading),
               widget.creating
                   ? Container()
                   : SizedBox(
                       height: Sizes.boxSeparation,
                     ),
-              widget.creating
-                  ? Container()
-                  : CustomButton("Eliminar", const Color(0xffbc171d), () async {
+              (!widget.creating && canDelete())
+                  ? CustomButton("Eliminar", const Color(0xffbc171d), () async {
                       if (updatingLoading || deletingLoading) {
                         return;
                       }
@@ -293,7 +322,8 @@ class _KitPageState extends State<KitPage> {
                         deletingLoading = false;
                       });
                       Navigator.of(context).pop();
-                    }, deletingLoading),
+                    }, deletingLoading)
+                  : Container(),
               SizedBox(
                 height: 3 * Sizes.boxSeparation,
               ),

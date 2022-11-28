@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:wood_center/wood/model/kit.dart';
 
-const String serverUrl = "http://10.0.2.2:8000/";
+// const String serverUrl = "http://10.0.2.2:8000/";
+const String serverUrl =
+    "https://d172-2800-cd0-ad3e-4d00-6315-5a3-1769-4c7b.sa.ngrok.io/";
 
 // const String apiPath = "api/v1/";
 const String apiPath = "api/v1/";

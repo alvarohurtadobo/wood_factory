@@ -5,7 +5,7 @@ class User {
   String password = "";
   String firstName = "";
   String lastName = "";
-  String photoUrl = "http://cdn.onlinewebfonts.com/svg/img_569206.png";
+  String photoUrl = "media/profiles/default.png";
   String documentId = "";
   String charge = "";
   bool active = false;
@@ -21,12 +21,17 @@ class User {
     email = myRes["email"] ?? "";
     firstName = myRes["first_name"] ?? "";
     lastName = myRes["last_name"] ?? "";
-    photoUrl = "http://cdn.onlinewebfonts.com/svg/img_569206.png";
+    photoUrl = myRes["photo_url"] ?? "";
     documentId = myRes["document"] ?? "";
     charge = myRes["charge"] ?? "";
     active = myRes["active"] == true;
     cityId = myRes["city_id"] ?? 0;
     roleId = myRes["role_id"] ?? 0;
+    if (photoUrl == "") {
+      photoUrl = "media/profiles/default.png";
+    }if (photoUrl[0]=="/") {
+      photoUrl = photoUrl.substring(1);
+    }
   }
 
   User(

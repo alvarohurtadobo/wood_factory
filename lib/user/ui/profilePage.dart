@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/repository/api.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/user/model/role.dart';
 import 'package:wood_center/user/model/user.dart';
@@ -40,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.all(
                             Radius.circular(Sizes.height / 16)),
                         image: DecorationImage(
-                            image: NetworkImage(myUser.photoUrl),
+                            image: NetworkImage(serverUrl + myUser.photoUrl),
                             fit: BoxFit.cover)),
                   ),
                 ),

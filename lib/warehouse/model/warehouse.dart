@@ -4,7 +4,7 @@ class Warehouse {
   static int lastId = 0;
   int id = 0;
   String name = "";
-  String mapUrl = "";
+  String mapUrl = "media/maps/default.png";
   int cityId = 0;
 
   // Auxiliar
@@ -26,11 +26,23 @@ class Warehouse {
     cityId = myRes["city_id"] ?? 0;
     mapUrl = myRes["map_url"] ?? "";
     cityName = myRes["city_name"] ?? "";
+    if (mapUrl == "") {
+      mapUrl = "media/maps/default.png";
+    }
+    if (mapUrl[0]=="/") {
+      mapUrl = mapUrl.substring(1);
+    }
   }
 
   String getName() {
     return "$name - $cityName";
   }
+
+@override
+  String toString(){
+    return "[Warehouse] $id, $name, $mapUrl";
+  }
+
 
   Warehouse.all() {
     id = 0;

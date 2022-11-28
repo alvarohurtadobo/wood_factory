@@ -13,5 +13,6 @@ Future<bool> getAllWarehouses() async {
   myWarehouses = myRes.myBody["warehouses"]
       .map<Warehouse>((w) => Warehouse.fromBackendResponse(w))
       .toList();
+      print(myWarehouses);
   return true;
 }
