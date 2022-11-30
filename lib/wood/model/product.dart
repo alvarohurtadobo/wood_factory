@@ -32,9 +32,9 @@ class Product {
     inventoryTypeId = myRes["inventory_type_id"] ?? 0;
     lineId = myRes["line_id"] ?? 0;
     isWood = myRes["is_wood"] ?? false;
-    length = double.tryParse(myRes["length"]) ?? 0.00;
-    width = double.tryParse(myRes["width"]) ?? 0.00;
-    height = double.tryParse(myRes["height"]) ?? 0.00;
+    length = double.tryParse(myRes["length"]??"0.0") ?? 0.00;
+    width = double.tryParse(myRes["width"]??"0.0") ?? 0.00;
+    height = double.tryParse(myRes["height"]??"0.0") ?? 0.00;
     species = myRes["species"];
     createdAt = DateTime.tryParse(myRes["created_at"]);
     updatedAt = DateTime.tryParse(myRes["updated_at"]);

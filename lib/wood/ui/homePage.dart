@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/components/toast.dart';
-import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
-import 'package:wood_center/user/bloc/providersBloc.dart';
-import 'package:wood_center/common/bloc/settingsBloc.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:wood_center/user/model/roleManagement.dart';
 import 'package:wood_center/wood/bloc/kitBloc.dart';
+import 'package:wood_center/user/bloc/providersBloc.dart';
+import 'package:wood_center/common/components/toast.dart';
+import 'package:wood_center/common/bloc/settingsBloc.dart';
+import 'package:wood_center/user/model/roleManagement.dart';
+import 'package:wood_center/warehouse/bloc/warehouseBloc.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -30,10 +31,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getSettings().then((success) {
       updateEmployeesAndProviders().then((successo) {
-        setState(() {
-          fullyLoaded = success && successo;
+        getAllWarehouses().then((value) {
+          setState(() {
+            fullyLoaded = success && successo;
+          });
+          print("Set state to $fullyLoaded");
         });
-        print("Set state to $fullyLoaded");
       });
     });
   }
@@ -64,8 +67,12 @@ class _HomePageState extends State<HomePage> {
                       if (code != null && code != "" && code != "-1") {
                         int parsedCode =
                             int.tryParse(code.replaceAll("kit_", "")) ?? 0;
-                        getExtendedKit(parsedCode).then((value) {
-                          Navigator.of(context).pushNamed("/updateKit");
+                        getExtendedKit(parsedCode).then((success) {
+                          if (success) {
+                            Navigator.of(context).pushNamed("/updateKit");
+                          } else {
+                            showToast("Código no encontrado");
+                          }
                         });
                       }
                     });

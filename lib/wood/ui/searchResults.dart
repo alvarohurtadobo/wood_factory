@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/wood/model/kit.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
 
@@ -41,7 +41,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     // print("Building tile for kit ${displ}")
     return GestureDetector(
       onTap: () {
-        currentKit = displayKit;
+        currentKit = Kit.copy(displayKit);
         Navigator.of(context).pushNamed("/updateKit").then((value) {
           setState(() {});
         });
@@ -63,7 +63,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(Sizes.radius),
                         bottomLeft: Radius.circular(Sizes.radius)),
-                    border: Border.all(color: Color(0xff343434))),
+                    border: Border.all(color: const Color(0xff343434))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

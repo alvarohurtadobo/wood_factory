@@ -32,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
   bool exactHeight = false;
   int? currentLineId;
 
-  bool currentProductIdWood = false;
+  bool currentProductIdWood = true;
 
   bool loading = false;
   int amountMin = 0;

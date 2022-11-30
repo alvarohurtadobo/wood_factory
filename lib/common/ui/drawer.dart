@@ -62,13 +62,14 @@ class MyDrawer extends StatelessWidget {
                                   color: Colors.white),
                             ),
                             SizedBox(
-                              width: Sizes.width * 0.5,
+                              width: Sizes.width * 0.42,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     myUser.fullName(),
                                     maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: Sizes.font08,
@@ -76,6 +77,7 @@ class MyDrawer extends StatelessWidget {
                                   ),
                                   Text(
                                     myRole.name,
+                                    overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -104,7 +106,7 @@ class MyDrawer extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(
                     left: Sizes.padding, top: Sizes.boxSeparation),
-                child: Text("Versión 0.9.0",
+                child: Text("Versión 0.9.2",
                     style: TextStyle(
                         color: const Color(0xff4F5051),
                         fontSize: Sizes.font10,

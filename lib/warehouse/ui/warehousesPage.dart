@@ -21,11 +21,11 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
   @override
   void initState() {
     super.initState();
-    currentWarehouse = myWarehouses.firstWhere(
-      (thisWarehouse) => thisWarehouse.cityId == myCity.id,
-    );
-    currentWarehouseId = currentWarehouse!.id;
     getAllWarehouses().then((success) {
+      currentWarehouse = myWarehouses.firstWhere(
+        (thisWarehouse) => thisWarehouse.cityId == myCity.id,
+      );
+      currentWarehouseId = currentWarehouse!.id;
       setState(() {
         loading = false;
       });
@@ -81,20 +81,24 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
             SizedBox(
               height: Sizes.boxSeparation,
             ),
-            currentMapUrl == ""
-                ? const Expanded(
-                    child: Center(
-                      child: Text("No hay para para esta bodega"),
-                    ),
-                  )
-                : Container(
-                    padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                    width: Sizes.width - 2 * Sizes.padding,
-                    height: Sizes.width - 2 * Sizes.padding,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(serverUrl + currentMapUrl))),
-                  )
+            loading
+                ? Container()
+                : currentMapUrl == ""
+                    ? const Expanded(
+                        child: Center(
+                          child: Text("No hay para para esta bodega"),
+                        ),
+                      )
+                    : Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: Sizes.padding),
+                        width: Sizes.width - 2 * Sizes.padding,
+                        height: Sizes.width - 2 * Sizes.padding,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image:
+                                    NetworkImage(serverUrl + currentMapUrl))),
+                      )
           ],
         ),
       ),

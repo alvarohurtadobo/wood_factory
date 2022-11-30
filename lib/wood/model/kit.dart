@@ -27,6 +27,9 @@ class Kit {
   String originalLocationName = "";
   String productSpecies = "";
 
+  DateTime? usedDatetime;
+  DateTime? transformedDatetime;
+
   String describe() {
     return "[PROD] $id, product: $productId, location: $locationId, state: $stateId, amount: $amount, origin: $originalLocationId, employee: $employeeId, provider: $externalProviderId";
   }
@@ -45,10 +48,44 @@ class Kit {
   double productLength = 0;
   double productWidth = 0;
   double productHeight = 0;
+  int? sourceKitId;
 
   bool isFromExternalProvider() {
     return externalProviderId !=
         null; // ||(employeeId == null && originalLocationId == null) ;
+  }
+
+  Kit.copy(Kit oldKit) {
+    id = oldKit.id;
+    amount = oldKit.amount;
+    productId = oldKit.productId;
+    stateId = oldKit.stateId;
+    locationId = oldKit.locationId;
+    destinyId = oldKit.destinyId;
+    originalLocationId = oldKit.originalLocationId;
+    externalProviderId = oldKit.externalProviderId;
+    employeeId = oldKit.employeeId;
+    updatingUserId = oldKit.updatingUserId;
+    productHeight = oldKit.productHeight;
+    productWidth = oldKit.productWidth;
+    productLength = oldKit.productLength;
+    productCode = oldKit.productCode;
+    productName = oldKit.productName;
+    productIsWood = oldKit.productIsWood;
+    locationName = oldKit.locationName;
+    warehouseName = oldKit.warehouseName;
+    woodStatusName = oldKit.woodStatusName;
+    // Ultimate version
+    providerFirstName = oldKit.providerFirstName;
+    providerLastName = oldKit.providerLastName;
+    employeeFirstName = oldKit.employeeFirstName;
+    employeeLastName = oldKit.employeeLastName;
+
+    originalLocationName = oldKit.originalLocationName;
+    productSpecies = oldKit.productSpecies;
+    sourceKitId = oldKit.sourceKitId;
+    transformedDatetime =oldKit.transformedDatetime;
+    usedDatetime = oldKit.usedDatetime;
   }
 
   Kit.fromBackendResponse(Map<String, dynamic> myRes) {
@@ -79,6 +116,10 @@ class Kit {
 
     originalLocationName = myRes["original_location_name"] ?? "";
     productSpecies = myRes["product_species"] ?? "";
+    sourceKitId = myRes["source_kit_id"];
+    transformedDatetime =
+        DateTime.tryParse(myRes["transformed_at_datetime"] ?? "");
+    usedDatetime = DateTime.tryParse(myRes["used_at_datetime"] ?? "");
 
     // "id": 3,
     // "amount": 200,
@@ -113,6 +154,7 @@ class Kit {
       "external_provider_id": externalProviderId,
       "employee_id": employeeId,
       "updating_user_id": updatingUserId,
+      "source_kit_id": sourceKitId
     };
     // "product_id": 2,
     // "state_id": 2,

@@ -6,7 +6,7 @@ import 'package:wood_center/common/sizes.dart';
 Future<bool> genericConfirmationDialog(
     BuildContext context, String finalLabel) async {
   double dialogWidth = Sizes.width * 0.8;
-  double dialogHeight = dialogWidth * 1.2;
+  double dialogHeight = dialogWidth * 1.4;
 
   return await showDialog(
           context: context,
@@ -82,7 +82,7 @@ Future<bool> genericConfirmationDialog(
                             onPressed: () {
                               Navigator.of(context).pop(true);
                             },
-                            child: const Text("Si, quiero salir",
+                            child: const Text("Si",
                                 style: TextStyle(color: Colors.white)),
                           )),
                       SizedBox(
@@ -101,7 +101,7 @@ Future<bool> genericConfirmationDialog(
                             onPressed: () {
                               Navigator.of(context).pop(false);
                             },
-                            child: const Text("Volver",
+                            child: const Text("Cancelar",
                                 style: TextStyle(color: Color(0xff3D464C))),
                           )),
                       SizedBox(

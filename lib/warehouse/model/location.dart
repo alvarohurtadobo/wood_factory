@@ -19,7 +19,7 @@ class Location {
     name = myRes["name"] ?? "";
     warehouseId = myRes["warehouse_id"] ?? 0;
     cityId =
-        myRes["city_id"] ?? 0; // TODO improve when backend support this feature
+        myRes["city_id"] ?? 0;
     // "id": 1,
     // "name": "B001",
     // "warehouse_id": 1

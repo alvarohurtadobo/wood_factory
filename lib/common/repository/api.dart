@@ -3,8 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:wood_center/wood/model/kit.dart';
 
 // const String serverUrl = "http://10.0.2.2:8000/";
+// const String serverUrl =
+//     "https://459c-2800-cd0-ad3e-4d00-85a2-b979-1b32-19a8.sa.ngrok.io/";
 const String serverUrl =
-    "https://d172-2800-cd0-ad3e-4d00-6315-5a3-1769-4c7b.sa.ngrok.io/";
+    "http://190.60.255.83/";
 
 // const String apiPath = "api/v1/";
 const String apiPath = "api/v1/";
@@ -40,11 +42,12 @@ class BackendResponse {
 class Api {
   static Future<BackendResponse> _get(String path) async {
     finalUrl = serverUrl + apiPath + path;
+    print(finalUrl);
 
     Response response = await dio.get(
         finalUrl); // options: Options(headers: {"Authorization": "Bearer $currentToken"})
-    return BackendResponse(
-        myBody: response.data, status: response.statusCode ?? 666);
+    Map<String, dynamic> result = response.data == "" ? {} : response.data;
+    return BackendResponse(myBody: result, status: response.statusCode ?? 666);
   }
 
   static Future<BackendResponse> _delete(String path) async {
@@ -58,6 +61,8 @@ class Api {
   static Future<BackendResponse> _postOrPut(String path, Map myBody,
       {bool isPut = false}) async {
     finalUrl = serverUrl + apiPath + path;
+    print("Post or put " + finalUrl);
+    print(myBody);
     print("finalUrl: $finalUrl");
     String myBodyString = json.encode(myBody);
     Response response;
@@ -134,5 +139,13 @@ class Api {
 
   static Future<BackendResponse> getExtendedKit(int kitId) async {
     return await Api._get("wood/kit_expanded/$kitId");
+  }
+
+  static Future<BackendResponse> useAndEmpty(int kitId) async {
+    return await Api._get("wood/kit/use/$kitId");
+  }
+
+  static Future<BackendResponse> transformAndEmpty(int kitId) async {
+    return await Api._get("wood/kit/transform/$kitId");
   }
 }

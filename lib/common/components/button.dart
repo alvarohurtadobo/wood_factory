@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Widget CustomButton(
-    String label, Color color, Function() action, bool loading) {
+Widget CustomButton(String label, Color color, Function() action, bool loading,
+    {bool enabled = true, bool disablePadding = false}) {
   return Container(
-      margin: EdgeInsets.symmetric(horizontal: Sizes.padding),
+      margin:
+          EdgeInsets.symmetric(horizontal: disablePadding ? 0 : Sizes.padding),
       width: double.infinity,
       height: Sizes.tileNormal,
       decoration: BoxDecoration(
@@ -13,7 +14,7 @@ Widget CustomButton(
       ),
       child: loading
           ? Container(
-            alignment: Alignment.center,
+              alignment: Alignment.center,
               height: Sizes.padding,
               width: Sizes.padding,
               child: const CircularProgressIndicator(
@@ -24,6 +25,6 @@ Widget CustomButton(
               onPressed: action,
               child: Text(
                 label,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: enabled ? Colors.white : Colors.grey),
               )));
 }

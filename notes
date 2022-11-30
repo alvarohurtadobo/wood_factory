@@ -1,0 +1,21 @@
+Creación qr
+1. [HECHO] Mensaje que diga que el QR fue creado satisfactoriamente 
+2. [HECHO] Código de producto mejor mostrar nombre y no el código. 
+3. [consultar, posible siguiente etapa] Creo que después de haber creado el QR, la información debería imprimirse y si se quiere modificar, esto debería hacerse haciendo click en modificar y ahi debería Imprimir el original, y permitir ver los campos que se van a modificar, así se tendría un nivel de seguridad para prevenir el error humano
+4. [HECHO] Que en la etiqueta fe qr, diga quien fue el responsable de crear el qr
+5. [HECHO] warning de cantidad 0
+
+
+Escanear:
+1. [SIGUIENTE ETAPA] Opción de escanear desde foto
+
+Nuevo ingreso:
+
+
+2. [SIGUIENTE ETAPA] BOTON: Usar y terminar: seleccionar para que producto se uso y ingresar no de lote, guardar esto en base de datos
+3. Boton transformar: Excelente lo del kit hijo
+
+
+Busqueda:
+1. [HECHO, CONSULTAR] Subdividir por ciudad 
+2. [HECHO] Cambie ubicación, me devuelvo y miro el resumen de búsqueda y sigue apareciendo en búsqueda con ubicación antigua, y al abrirlo si aparece nueva ubicación.
