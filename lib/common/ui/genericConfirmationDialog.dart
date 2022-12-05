@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Future<bool> genericConfirmationDialog(
-    BuildContext context, String finalLabel) async {
+Future<bool> genericConfirmationDialog(BuildContext context, String finalLabel,
+    {bool hideYes = false, String cancelLabel = 'Cancelar'}) async {
   double dialogWidth = Sizes.width * 0.8;
   double dialogHeight = dialogWidth * 1.4;
 
@@ -69,22 +69,24 @@ Future<bool> genericConfirmationDialog(
                       SizedBox(
                         height: Sizes.boxSeparation,
                       ),
-                      Container(
-                          height: Sizes.height * 0.08,
-                          width: dialogWidth - 2 * Sizes.padding,
-                          decoration: BoxDecoration(
-                              color: const Color(0xffbc171d),
-                              border:
-                                  Border.all(color: const Color(0xffbc171d)),
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(Sizes.height * 0.2 / 8))),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                            },
-                            child: const Text("Si",
-                                style: TextStyle(color: Colors.white)),
-                          )),
+                      hideYes
+                          ? Container()
+                          : Container(
+                              height: Sizes.height * 0.08,
+                              width: dialogWidth - 2 * Sizes.padding,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffbc171d),
+                                  border: Border.all(
+                                      color: const Color(0xffbc171d)),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(Sizes.height * 0.2 / 8))),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                child: const Text("Si",
+                                    style: TextStyle(color: Colors.white)),
+                              )),
                       SizedBox(
                         height: Sizes.boxSeparation,
                       ),
@@ -101,8 +103,9 @@ Future<bool> genericConfirmationDialog(
                             onPressed: () {
                               Navigator.of(context).pop(false);
                             },
-                            child: const Text("Cancelar",
-                                style: TextStyle(color: Color(0xff3D464C))),
+                            child: Text(cancelLabel,
+                                style:
+                                    const TextStyle(color: Color(0xff3D464C))),
                           )),
                       SizedBox(
                         height: 2 * Sizes.boxSeparation,

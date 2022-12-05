@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/components/toast.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/user/model/user.dart';
@@ -102,7 +103,14 @@ class LoginPageState extends State<LoginPage> {
                   });
                   print("Login view with $email, $password");
                   if (_formKey.currentState!.validate()) {
-                    bool success = await login(email, password);
+                    bool success =
+                        await login(email, password).catchError((err) {
+                      print("This error catched $err");
+                      showToast("Usuario o contraseña inválidos");
+                      setState(() {
+                        loading = false;
+                      });
+                    });
                     if (success) {
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString("jwt", token);

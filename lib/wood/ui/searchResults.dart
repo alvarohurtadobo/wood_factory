@@ -53,7 +53,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           children: [
             Expanded(
               child: Container(
-                // height: Sizes.height/8,
+                height: Sizes.height / 6.8,
                 margin: EdgeInsets.only(
                     left: Sizes.padding, bottom: Sizes.boxSeparation),
                 padding: EdgeInsets.symmetric(
@@ -88,8 +88,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                 fontWeight: FontWeight.normal,
                                 color: Color(0xff343434)))
                         : const Text(""),
-                    SizedBox(
-                      height: Sizes.boxSeparation / 2,
+                    Expanded(
+                      child: SizedBox(
+                        height: Sizes.boxSeparation / 2,
+                      ),
                     ),
                     const Text("Ubicación: ",
                         style: TextStyle(
@@ -106,7 +108,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             ),
             Container(
               width: 0.26 * tileWidth,
-              // height: Sizes.height/8,
+              height: Sizes.height / 6.8,
               margin: EdgeInsets.only(
                   right: Sizes.padding, bottom: Sizes.boxSeparation),
               padding: EdgeInsets.symmetric(
@@ -127,11 +129,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white)),
                   Text(displayKit.woodStatusName.toString(),
-                      maxLines: 1,
+                      maxLines: 2,
+                      textAlign: TextAlign.end,
                       style: const TextStyle(
                           fontWeight: FontWeight.normal, color: Colors.white)),
-                  const Text(""),
-                  const Text(""),
+                  const Expanded(
+                    child: SizedBox(),
+                  ),
                   const Icon(
                     Icons.edit,
                     color: Colors.white,

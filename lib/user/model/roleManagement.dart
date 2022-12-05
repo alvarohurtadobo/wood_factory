@@ -11,7 +11,7 @@ bool canCreateKits() {
 }
 
 bool canDelete() {
-  return (myRole.id == 1 || myRole.id == 6 || myRole.id == 2 || myRole.id == 3);
+  return (myRole.id == 1 || myRole.id == 6 || myRole.id == 3);
 }
 
 bool canUpdateProduct() {

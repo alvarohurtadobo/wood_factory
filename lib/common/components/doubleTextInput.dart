@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
 Widget DoubleTextInput(Function(double) updateParam,
-    {bool hasUnits = false, TextEditingController? controller, bool enabled=true}) {
+    {bool hasUnits = false, TextEditingController? controller, bool enabled=true, FocusNode? myFocusNode}) {
   return Container(
     // width: 0.32 * Sizes.width,
     height: Sizes.tileNormal,
@@ -10,6 +10,7 @@ Widget DoubleTextInput(Function(double) updateParam,
         border: Border(bottom: BorderSide(color: Color(0xff343434)))),
     child: TextField(
       controller: controller,
+      focusNode: myFocusNode,
       textAlign: TextAlign.right,
       cursorColor: const Color(0xffbc171d),
       decoration: InputDecoration(

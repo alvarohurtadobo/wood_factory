@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
@@ -18,6 +17,7 @@ import 'package:wood_center/wood/bloc/productBloc.dart';
 import 'package:wood_center/common/components/toast.dart';
 import 'package:wood_center/warehouse/model/location.dart';
 import 'package:wood_center/common/components/button.dart';
+import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/user/model/roleManagement.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
@@ -55,9 +55,12 @@ class _KitPageState extends State<KitPage> {
 
   TextEditingController amountController = TextEditingController();
 
+  late FocusNode myFocusNode;
+
   @override
   void initState() {
     super.initState();
+    myFocusNode = FocusNode();
     externalProvider = currentKit.isFromExternalProvider();
     amountController.text = currentKit.amount.toString();
     if (widget.creating) {
@@ -73,6 +76,12 @@ class _KitPageState extends State<KitPage> {
       currentCityId = null;
       currentLineId = null;
     }
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -237,6 +246,7 @@ class _KitPageState extends State<KitPage> {
                   DoubleTextInput((value) {
                     currentKit.amount = value.toInt();
                   },
+                      myFocusNode: myFocusNode,
                       controller: amountController,
                       enabled: widget.creating || canUpdateAmoun())),
               SizedBox(
@@ -391,7 +401,7 @@ class _KitPageState extends State<KitPage> {
                             await Api.updateKit(currentKit.id, currentKit);
                         if (myRes.status == 200) {
                           print("Actualizado correctamente $currentKit");
-
+                          showToast("Kit actualizado correctamente");
                           int index = myKits.indexWhere(
                               (element) => element.id == currentKit.id);
                           Location newLocation = myLocations.firstWhere(
@@ -457,7 +467,7 @@ class _KitPageState extends State<KitPage> {
               (!widget.creating &&
                       canDelete() &&
                       currentKit.usedDatetime == null)
-                  ? CustomButton("Usar y terminar", const Color(0xff4C2F12),
+                  ? CustomButton("Ensamblar", const Color(0xff4C2F12),
                       () async {
                       if (updatingLoading ||
                           deletingLoading ||
@@ -468,7 +478,7 @@ class _KitPageState extends State<KitPage> {
                         clearingLoading = true;
                       });
                       bool confirm = await genericConfirmationDialog(context,
-                          "¿Está seguro que este kit fue utilizado en su totalidad");
+                          "¿Está seguro que este kit fue utilizado en su totalidad?");
                       if (confirm) {
                         bool used = await useKit(currentKit.id);
                         amountController.text = "0";
@@ -477,6 +487,11 @@ class _KitPageState extends State<KitPage> {
                         } else {
                           showToast("Kit marcando como terminado");
                         }
+                      } else {
+                        genericConfirmationDialog(context,
+                                "En ese caso simplemente actualice la cantidad",
+                                hideYes: true, cancelLabel: "Aceptar")
+                            .then((value) => myFocusNode.requestFocus());
                       }
                       setState(() {
                         clearingLoading = false;

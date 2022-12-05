@@ -7,15 +7,57 @@ Creación qr
 
 
 Escanear:
-1. [SIGUIENTE ETAPA] Opción de escanear desde foto
+    1. [SIGUIENTE ETAPA] Opción de escanear desde foto
 
-Nuevo ingreso:
+    Nuevo ingreso:
 
 
-2. [SIGUIENTE ETAPA] BOTON: Usar y terminar: seleccionar para que producto se uso y ingresar no de lote, guardar esto en base de datos
+    2. [SIGUIENTE ETAPA] BOTON: Usar y terminar: seleccionar para que producto se uso y ingresar no de lote, guardar esto en base de datos
 3. Boton transformar: Excelente lo del kit hijo
 
 
 Busqueda:
 1. [HECHO, CONSULTAR] Subdividir por ciudad 
 2. [HECHO] Cambie ubicación, me devuelvo y miro el resumen de búsqueda y sigue apareciendo en búsqueda con ubicación antigua, y al abrirlo si aparece nueva ubicación.
+
+
+Contrastar con el QR:
+Aumentar campo de qr generado si/No
+
+lectyor pdf
+
+Aumentar en el encabezado de la aplicaci∑on el logo
+
+
+OFIMA sistema
+
+Coordinado verifica e imprima
+
+Inventarios fisicos
+
+Procesos
+
+Pasar a kit es uno de los procesos 
+
+ENSAMBLE
+
+Verificado de qr manual si esta mal entonces se permite editar
+
+INVENTARIO FISICO
+
+Mensual
+
+Botones de lectura y verificacion
+
+Aumentar una relacion muchos a muchos para kits padres e hijos
+
+Creación de estiba dentro de la aplicacion
+
+Confirmar la cantidad restante en los kits cuando se crean las stibas
+
+Generacion de pdf con verificacion de coordinador por empleado y general
+
+excel para segunda
+
+Segunda parte poder descsargar su excel, kits con estado de madera
+
