@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/components/expandedTile.dart';
 import 'package:wood_center/common/sizes.dart';
+import 'package:wood_center/common/tools/datetimeParser.dart';
+import 'package:wood_center/user/model/user.dart';
 import 'package:wood_center/wood/model/kit.dart';
 import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/wood/model/line.dart';
@@ -26,8 +29,10 @@ import 'package:wood_center/common/ui/genericConfirmationDialog.dart';
 
 class KitPage extends StatefulWidget {
   bool creating;
+  bool fromScan;
 
-  KitPage({key, this.creating = false}) : super(key: key);
+  KitPage({key, this.creating = false, this.fromScan = false})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => _KitPageState();
 }
@@ -53,6 +58,8 @@ class _KitPageState extends State<KitPage> {
 
   int displaySourceId = 0;
 
+  Kit impressKit = Kit.empty();
+
   TextEditingController amountController = TextEditingController();
 
   late FocusNode myFocusNode;
@@ -75,6 +82,9 @@ class _KitPageState extends State<KitPage> {
     } else {
       currentCityId = null;
       currentLineId = null;
+    }
+    if (widget.fromScan) {
+      impressKit = Kit.copy(currentKit);
     }
   }
 
@@ -106,6 +116,7 @@ class _KitPageState extends State<KitPage> {
                 height:
                     displaySourceId != 0 ? Sizes.boxSeparation : Sizes.padding,
               ),
+              widget.fromScan ? impressKitDisplay(impressKit) : Container(),
               (displaySourceId == 0 || !widget.creating)
                   ? Container()
                   : rowPiece(
@@ -199,8 +210,8 @@ class _KitPageState extends State<KitPage> {
                   padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
                   child: const Text("INFORMACIÓN DEL KIT",
                       style: TextStyle(fontWeight: FontWeight.bold))),
-              rowPiece(
-                  const Text("Producto"),
+              expandedTile(
+                  "Producto",
                   loadingProducts
                       ? Center(
                           child: SizedBox(
@@ -221,8 +232,8 @@ class _KitPageState extends State<KitPage> {
                         },
                           error: noProductError,
                           enabled: widget.creating || canUpdateProduct())),
-              rowPiece(
-                  const Text("Ubicación"),
+              expandedTile(
+                  "Ubicación",
                   CustomDropDown(
                       Location.getLocationsFilteredByCityId(currentCityId),
                       currentKit.locationId, (value) {
@@ -232,8 +243,8 @@ class _KitPageState extends State<KitPage> {
                   },
                       error: noLocationError,
                       enabled: widget.creating || canUpdateLocation())),
-              rowPiece(
-                  const Text("Estado"),
+              expandedTile(
+                  "Estado",
                   CustomDropDown(myWoodStates, currentKit.stateId, (value) {
                     setState(() {
                       currentKit.stateId = value;
@@ -277,8 +288,8 @@ class _KitPageState extends State<KitPage> {
               ),
               externalProvider
                   ? Container()
-                  : rowPiece(
-                      const Text("Lugar de origen"),
+                  : expandedTile(
+                      "Lugar de origen",
                       CustomDropDown(myLocations, currentKit.originalLocationId,
                           (value) {
                         setState(() {
@@ -294,8 +305,8 @@ class _KitPageState extends State<KitPage> {
                     ),
               externalProvider
                   ? Container()
-                  : rowPiece(
-                      const Text("Empleado"),
+                  : expandedTile(
+                      "Empleado",
                       CustomDropDown(myEmployees, currentKit.employeeId,
                           (value) {
                         setState(() {
@@ -305,8 +316,8 @@ class _KitPageState extends State<KitPage> {
                           enabled: widget.creating ||
                               canUpdateOriginProviderEmployee())),
               externalProvider
-                  ? rowPiece(
-                      const Text("Nombre"),
+                  ? expandedTile(
+                      "Nombre",
                       CustomDropDown(myProviders, currentKit.externalProviderId,
                           (value) {
                         setState(() {
@@ -332,6 +343,7 @@ class _KitPageState extends State<KitPage> {
 
                       await getExtendedKit(currentKit.id);
                       lastKitIdGeneratedQrForDebug = currentKit.id;
+                      print("Set demo kit to $lastKitIdGeneratedQrForDebug");
                       setState(() {
                         generating = false;
                       });
@@ -404,22 +416,9 @@ class _KitPageState extends State<KitPage> {
                           showToast("Kit actualizado correctamente");
                           int index = myKits.indexWhere(
                               (element) => element.id == currentKit.id);
-                          Location newLocation = myLocations.firstWhere(
-                              (element) => element.id == currentKit.locationId);
-                          currentKit.locationName = newLocation.name;
-                          currentKit.warehouseName = myWarehouses
-                              .firstWhere((element) =>
-                                  element.id == newLocation.warehouseId)
-                              .name;
-
+                          updateExternalParametersInCurrentKit();
+                          impressKit = currentKit;
                           myKits[index] = currentKit;
-
-                          // for(Kit thisKit in myKits){
-                          //   if(thisKit.id==currentKit.id){
-                          //     print("Actualizado correctamente $currentKit");
-                          //     thisKit = currentKit;
-                          //   }
-                          // }
                         } else {
                           print("No se pudo actualizar");
                         }
@@ -549,4 +548,123 @@ class _KitPageState extends State<KitPage> {
       ),
     );
   }
+
+  Widget impressKitDisplay(Kit myKit) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: Sizes.padding,
+          right: Sizes.padding,
+          bottom: Sizes.boxSeparation),
+      padding: EdgeInsets.all(Sizes.boxSeparation),
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(getDatetime(myKit.createdAt),
+                maxLines: 1, style: const TextStyle(fontSize: 24)),
+            Text("Cantidad: ${myKit.amount}",
+                maxLines: 1, style: const TextStyle(fontSize: 16)),
+            Text("Bodega: ${myKit.warehouseName}",
+                maxLines: 1, style: const TextStyle(fontSize: 16)),
+            Text("Ubicación: ${myKit.locationName}",
+                maxLines: 1, style: const TextStyle(fontSize: 16)),
+            (myKit.employeeFirstName == "" && myKit.employeeLastName == "")
+                ? Container()
+                : Text(
+                    "Operario: ${myKit.employeeFirstName} ${myKit.employeeLastName}",
+                    maxLines: 1,
+                    style: const TextStyle(fontSize: 16)),
+            (myKit.originalLocationName == "")
+                ? Container()
+                : Text("Ubicación original: ${myKit.originalLocationName}",
+                    maxLines: 1, style: const TextStyle(fontSize: 16)),
+            (myKit.providerFirstName == "" && myKit.providerLastName == "")
+                ? Container()
+                : Text(
+                    "Proveedor: ${myKit.providerFirstName} ${myKit.providerLastName}",
+                    maxLines: 1,
+                    style: const TextStyle(fontSize: 16)),
+            Text(myKit.productCode,
+                maxLines: 1, style: const TextStyle(fontSize: 16)),
+            (myKit.productSpecies == "")
+                ? Container()
+                : Text("Especie: ${myKit.productSpecies}",
+                    maxLines: 1, style: const TextStyle(fontSize: 16)),
+            (!myKit.productIsWood)
+                ? Container()
+                : Text(
+                    "${myKit.productLength} x ${myKit.productWidth} x ${myKit.productHeight}",
+                    maxLines: 1,
+                    style: const TextStyle(fontSize: 16)),
+            (myKit.updatingUserFirstName != "" &&
+                    myKit.updatingUserLastName != "")
+                ? Text(
+                    "Responsable Qr: ${myKit.updatingUserFirstName} ${myKit.updatingUserLastName}",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 16))
+                : Container(),
+          ]),
+    );
+  }
+}
+
+bool updateExternalParametersInCurrentKit() {
+  // Ubicacion actual
+  Location newLocation =
+      myLocations.firstWhere((element) => element.id == currentKit.locationId);
+  currentKit.locationName = newLocation.name;
+  // Ubicacion original
+  if (currentKit.originalLocationId != null) {
+    currentKit.originalLocationName = myLocations
+        .firstWhere((element) => element.id == currentKit.originalLocationId)
+        .name;
+  }
+  // Proveedor
+  if (currentKit.externalProviderId != null) {
+    currentKit.providerFirstName = myProviders
+        .firstWhere((element) => element.id == currentKit.externalProviderId)
+        .firstName;
+    currentKit.providerLastName = myProviders
+        .firstWhere((element) => element.id == currentKit.externalProviderId)
+        .lastName;
+  }
+  // Operario
+  if (currentKit.employeeId != null) {
+    currentKit.employeeFirstName = myEmployees
+        .firstWhere((element) => element.id == currentKit.employeeId)
+        .firstName;
+    currentKit.employeeLastName = myEmployees
+        .firstWhere((element) => element.id == currentKit.employeeId)
+        .lastName;
+  }
+  // Product
+  currentKit.productCode = myProducts
+      .firstWhere((element) => element.id == currentKit.productId)
+      .code;
+  currentKit.productHeight = myProducts
+          .firstWhere((element) => element.id == currentKit.productId)
+          .height ??
+      0;
+  currentKit.productWidth = myProducts
+          .firstWhere((element) => element.id == currentKit.productId)
+          .width ??
+      0;
+  currentKit.productLength = myProducts
+          .firstWhere((element) => element.id == currentKit.productId)
+          .length ??
+      0;
+  currentKit.productSpecies = myProducts
+          .firstWhere((element) => element.id == currentKit.productId)
+          .species ??
+      "";
+  // User
+  currentKit.updatingUserFirstName = myUser.firstName;
+  currentKit.updatingUserLastName = myUser.lastName;
+  // Waresouse name
+  currentKit.warehouseName = myWarehouses
+      .firstWhere((element) => element.id == newLocation.warehouseId)
+      .name;
+  return true;
 }

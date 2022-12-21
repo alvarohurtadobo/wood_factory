@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                             int.tryParse(code.replaceAll("kit_", "")) ?? 0;
                         getExtendedKit(parsedCode).then((success) {
                           if (success) {
-                            Navigator.of(context).pushNamed("/updateKit");
+                            Navigator.of(context).pushNamed("/scsannedKit");
                           } else {
                             showToast("Código no encontrado");
                           }
@@ -84,12 +84,12 @@ class _HomePageState extends State<HomePage> {
                     FlutterBarcodeScanner.scanBarcode(
                             '#ff6666', 'Cancel', true, ScanMode.QR)
                         .then((String code) {
-                      int parsedCode = lastKitIdGeneratedQrForDebug + 1;
+                      int parsedCode = lastKitIdGeneratedQrForDebug;
                       print("Debug code $parsedCode");
                       //int.tryParse(code.replaceAll("kit_", "")) ?? 0;
                       getExtendedKit(parsedCode).then((success) {
                         if (success) {
-                          Navigator.of(context).pushNamed("/updateKit");
+                          Navigator.of(context).pushNamed("/scsannedKit");
                         } else {
                           showToast("Código no encontrado");
                         }

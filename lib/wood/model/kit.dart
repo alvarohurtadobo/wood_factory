@@ -16,6 +16,9 @@ class Kit {
 
   int updatingUserId = 0;
 
+  String updatingUserFirstName = "";
+  String updatingUserLastName = "";
+
   DateTime createdAt = DateTime.now();
 
   // Ultimate version
@@ -120,6 +123,9 @@ class Kit {
     transformedDatetime =
         DateTime.tryParse(myRes["transformed_at_datetime"] ?? "");
     usedDatetime = DateTime.tryParse(myRes["used_at_datetime"] ?? "");
+
+    updatingUserFirstName = myRes["updating_user_first_name"] ?? "";
+    updatingUserLastName = myRes["updating_user_last_name"] ?? "";
 
     // "id": 3,
     // "amount": 200,

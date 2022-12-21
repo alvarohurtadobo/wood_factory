@@ -31,6 +31,10 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => KitPage(creating: false),
         );
+      case "/scsannedKit":
+        return MaterialPageRoute(
+          builder: (_) => KitPage(creating: false, fromScan: true),
+        );
       case "/viewQr":
         return MaterialPageRoute(
           builder: (_) => QrPage(),
