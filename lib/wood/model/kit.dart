@@ -124,8 +124,10 @@ class Kit {
         DateTime.tryParse(myRes["transformed_at_datetime"] ?? "");
     usedDatetime = DateTime.tryParse(myRes["used_at_datetime"] ?? "");
 
+
     updatingUserFirstName = myRes["updating_user_first_name"] ?? "";
     updatingUserLastName = myRes["updating_user_last_name"] ?? "";
+    print("Updating user is $updatingUserFirstName, $updatingUserLastName");
 
     // "id": 3,
     // "amount": 200,

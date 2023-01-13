@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/common/components/expandedTile.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/wood/bloc/productBloc.dart';
 import 'package:wood_center/wood/model/kit.dart';
@@ -143,8 +144,8 @@ class _SearchPageState extends State<SearchPage> {
                     });
                     filters.remove("product_id");
                   })),
-              rowPiece(
-                  const Text("Producto"),
+              expandedTile(
+                  "Producto",
                   loadingProducts
                       ? Center(
                           child: SizedBox(

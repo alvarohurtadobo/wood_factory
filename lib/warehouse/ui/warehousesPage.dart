@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:wood_center/common/sizes.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
@@ -43,8 +44,7 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
       backgroundColor: Colors.white,
       appBar: myAppBar("Mapa  de bodega"),
       drawer: MyDrawer(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+      body: SizedBox(
         height: Sizes.height,
         width: Sizes.width,
         child: Column(
@@ -54,7 +54,10 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
             SizedBox(
               height: Sizes.padding,
             ),
-            const Text("Seleccionar la bodega:"),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
+              child: const Text("Seleccionar la bodega:"),
+            ),
             SizedBox(
               height: Sizes.boxSeparation,
             ),
@@ -89,15 +92,13 @@ class _WarehousesMapPageState extends State<WarehousesMapPage> {
                           child: Text("No hay para para esta bodega"),
                         ),
                       )
-                    : Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: Sizes.padding),
-                        width: Sizes.width - 2 * Sizes.padding,
-                        height: Sizes.width - 2 * Sizes.padding,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image:
-                                    NetworkImage(serverUrl + currentMapUrl))),
+                    : Expanded(
+                        child: PhotoView(
+                          backgroundDecoration:
+                              const BoxDecoration(color: Colors.white),
+                          imageProvider:
+                              NetworkImage(serverUrl + currentMapUrl),
+                        ),
                       )
           ],
         ),
