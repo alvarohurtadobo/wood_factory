@@ -280,11 +280,27 @@ class _SearchPageState extends State<SearchPage> {
                                 }),
                             exactLength
                                 ? DoubleTextInput((value) {
-                                    currentProduct.length = value;
+                                    if (value > 0) {
+                                      filters["length"] = value;
+                                    } else {
+                                      filters.remove("length");
+                                    }
                                   },
                                     hasUnits: true,
                                     controller: lengthController)
-                                : DoubleRangeTextInput((val) {},
+                                : DoubleRangeTextInput((val) {
+                                    if (val > 0) {
+                                      filters["length_min"] = val;
+                                    } else {
+                                      filters.remove("length_min");
+                                    }
+                                  }, (val) {
+                                    if (val > 0) {
+                                      filters["length_max"] = val;
+                                    } else {
+                                      filters.remove("length_max");
+                                    }
+                                  },
                                     controllerLeft: lengthMinController,
                                     controllerRight: lengthMaxController)),
                         threeColumnRowPiece(
@@ -304,10 +320,26 @@ class _SearchPageState extends State<SearchPage> {
                                 }),
                             exactWidth
                                 ? DoubleTextInput((value) {
-                                    currentProduct.width = value;
+                                    if (value > 0) {
+                                      filters["width"] = value;
+                                    } else {
+                                      filters.remove("width");
+                                    }
                                   },
                                     hasUnits: true, controller: widthController)
-                                : DoubleRangeTextInput((val) {},
+                                : DoubleRangeTextInput((val) {
+                                    if (val > 0) {
+                                      filters["width_min"] = val;
+                                    } else {
+                                      filters.remove("width_min");
+                                    }
+                                  }, (val) {
+                                    if (val > 0) {
+                                      filters["width_max"] = val;
+                                    } else {
+                                      filters.remove("width_max");
+                                    }
+                                  },
                                     controllerLeft: widthMinController,
                                     controllerRight: widthMaxController)),
                         threeColumnRowPiece(
@@ -326,12 +358,28 @@ class _SearchPageState extends State<SearchPage> {
                                   heightMaxController.clear();
                                 }),
                             exactHeight
-                                ? DoubleTextInput((value) {
-                                    currentProduct.height = value;
+                                ? DoubleTextInput((val) {
+                                    if (val > 0) {
+                                      filters["height"] = val;
+                                    } else {
+                                      filters.remove("height");
+                                    }
                                   },
                                     hasUnits: true,
                                     controller: heightController)
-                                : DoubleRangeTextInput((val) {},
+                                : DoubleRangeTextInput((val) {
+                                    if (val > 0) {
+                                      filters["height_min"] = val;
+                                    } else {
+                                      filters.remove("height_min");
+                                    }
+                                  }, (val) {
+                                    if (val > 0) {
+                                      filters["height_max"] = val;
+                                    } else {
+                                      filters.remove("height_max");
+                                    }
+                                  },
                                     controllerLeft: heightMinController,
                                     controllerRight: heightMaxController)),
                       ],

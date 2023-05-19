@@ -41,6 +41,21 @@ class Kit {
     updatingUserId = myUser.id;
   }
 
+  static areEqual(Kit kit1, Kit kit2) {
+    return kit1.amount == kit2.amount &&
+        kit1.productId == kit2.productId &&
+        kit1.stateId == kit2.stateId &&
+        kit1.locationId == kit2.locationId &&
+        kit1.destinyId == kit2.destinyId &&
+        kit1.originalLocationId == kit2.originalLocationId &&
+        kit1.externalProviderId == kit2.externalProviderId &&
+        kit1.employeeId == kit2.employeeId &&
+        kit1.updatingUserId == kit2.updatingUserId &&
+        kit1.sourceKitId == kit2.sourceKitId &&
+        kit1.transformedDatetime == kit2.transformedDatetime &&
+        kit1.usedDatetime == kit2.usedDatetime;
+  }
+
   // Auxiliar
   String productCode = "";
   String productName = "";
@@ -87,7 +102,7 @@ class Kit {
     originalLocationName = oldKit.originalLocationName;
     productSpecies = oldKit.productSpecies;
     sourceKitId = oldKit.sourceKitId;
-    transformedDatetime =oldKit.transformedDatetime;
+    transformedDatetime = oldKit.transformedDatetime;
     usedDatetime = oldKit.usedDatetime;
   }
 
@@ -123,7 +138,6 @@ class Kit {
     transformedDatetime =
         DateTime.tryParse(myRes["transformed_at_datetime"] ?? "");
     usedDatetime = DateTime.tryParse(myRes["used_at_datetime"] ?? "");
-
 
     updatingUserFirstName = myRes["updating_user_first_name"] ?? "";
     updatingUserLastName = myRes["updating_user_last_name"] ?? "";
@@ -185,3 +199,5 @@ List<Kit> myKits = [
   // Kit(10, 5, 320, 5, "INEF8003", "D1 - Bogotá", "Torcido"),
   // Kit(20, 12.5, 500, 10, "INEF8004", "B1 - Medellín", "Bueno"),
 ];
+
+List<Kit> clearanceKits = [];

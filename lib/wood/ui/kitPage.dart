@@ -59,6 +59,7 @@ class _KitPageState extends State<KitPage> {
   int displaySourceId = 0;
 
   Kit impressKit = Kit.empty();
+  Kit backupKit = Kit.empty();
 
   TextEditingController amountController = TextEditingController();
 
@@ -70,6 +71,7 @@ class _KitPageState extends State<KitPage> {
     myFocusNode = FocusNode();
     externalProvider = currentKit.isFromExternalProvider();
     amountController.text = currentKit.amount.toString();
+    backupKit = Kit.copy(currentKit);
     if (widget.creating) {
       currentKit = Kit.empty();
       if (sourceKit.id != 0) {
@@ -272,12 +274,11 @@ class _KitPageState extends State<KitPage> {
                         activeColor: const Color(0xffbc171d),
                         onChanged: (widget.creating || canUpdateProduct())
                             ? (value) {
+                                currentKit.originalLocationId = null;
+                                currentKit.employeeId = null;
+                                currentKit.externalProviderId = null;
+                                updateExternalParametersInCurrentKit(currentKit);
                                 setState(() {
-                                  if (widget.creating) {
-                                    currentKit.originalLocationId = null;
-                                    currentKit.employeeId = null;
-                                    currentKit.externalProviderId = null;
-                                  }
                                   externalProvider = value;
                                 });
                               }
@@ -396,6 +397,7 @@ class _KitPageState extends State<KitPage> {
                         if (myRes.status == 201) {
                           if (myRes.myBody.containsKey("id")) {
                             currentKit.id = myRes.myBody["id"] as int;
+                            backupKit = Kit.copy(currentKit);
                             sourceKit = Kit.empty();
                           } else {
                             showToast('Creación irregular');
@@ -409,16 +411,29 @@ class _KitPageState extends State<KitPage> {
                           print("No se pudo crear");
                         }
                       } else {
+                        if (Kit.areEqual(backupKit, currentKit)) {
+                          print("No changes, returning");
+                          setState(() {
+                            updatingLoading = false;
+                          });
+                          return;
+                        }
                         BackendResponse myRes =
                             await Api.updateKit(currentKit.id, currentKit);
                         if (myRes.status == 200) {
                           print("Actualizado correctamente $currentKit");
                           showToast("Kit actualizado correctamente");
+                          impressKit = Kit.copy(currentKit);
+                          backupKit = Kit.copy(currentKit);
+                          updateExternalParametersInCurrentKit(currentKit);
+                          updateExternalParametersInCurrentKit(impressKit);
+                          updateExternalParametersInCurrentKit(backupKit);
+                          setState(() {});
                           int index = myKits.indexWhere(
                               (element) => element.id == currentKit.id);
-                          updateExternalParametersInCurrentKit();
-                          impressKit = currentKit;
-                          myKits[index] = currentKit;
+                          if (index != -1) {
+                            myKits[index] = currentKit;
+                          }
                         } else {
                           print("No se pudo actualizar");
                         }
@@ -610,7 +625,7 @@ class _KitPageState extends State<KitPage> {
   }
 }
 
-bool updateExternalParametersInCurrentKit() {
+bool updateExternalParametersInCurrentKit(Kit currentKit) {
   // Ubicacion actual
   Location newLocation =
       myLocations.firstWhere((element) => element.id == currentKit.locationId);
@@ -620,6 +635,8 @@ bool updateExternalParametersInCurrentKit() {
     currentKit.originalLocationName = myLocations
         .firstWhere((element) => element.id == currentKit.originalLocationId)
         .name;
+  } else {
+    currentKit.originalLocationName = "";
   }
   // Proveedor
   if (currentKit.externalProviderId != null) {
@@ -629,6 +646,9 @@ bool updateExternalParametersInCurrentKit() {
     currentKit.providerLastName = myProviders
         .firstWhere((element) => element.id == currentKit.externalProviderId)
         .lastName;
+  } else {
+    currentKit.providerFirstName = "";
+    currentKit.providerLastName = "";
   }
   // Operario
   if (currentKit.employeeId != null) {
@@ -638,6 +658,9 @@ bool updateExternalParametersInCurrentKit() {
     currentKit.employeeLastName = myEmployees
         .firstWhere((element) => element.id == currentKit.employeeId)
         .lastName;
+  } else {
+    currentKit.employeeFirstName = "";
+    currentKit.employeeLastName = "";
   }
   // Product
   currentKit.productCode = myProducts

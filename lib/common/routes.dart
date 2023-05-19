@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wood_center/wood/ui/clearancePage.dart';
+import 'package:wood_center/wood/ui/inventoryPage.dart';
 import 'package:wood_center/wood/ui/qrPage.dart';
 import 'package:wood_center/wood/ui/kitPage.dart';
 import 'package:wood_center/wood/ui/homePage.dart';
@@ -26,6 +28,14 @@ class RouteGenerator {
       case "/createKit":
         return MaterialPageRoute(
           builder: (_) => KitPage(creating: true),
+        );
+      case "/clearance":
+        return MaterialPageRoute(
+          builder: (_) => ClearancePage(),
+        );
+      case "/inventory":
+        return MaterialPageRoute(
+          builder: (_) => InventoryPage(),
         );
       case "/updateKit":
         return MaterialPageRoute(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/common/sizes.dart';
 
-Widget DoubleRangeTextInput(Function(double) updateParam,
+Widget DoubleRangeTextInput(Function(double) updateParam1,Function(double) updateParam2,
     {bool hasUnits = false,
     TextEditingController? controllerLeft,
     TextEditingController? controllerRight}) {
@@ -40,7 +40,9 @@ Widget DoubleRangeTextInput(Function(double) updateParam,
           onChanged: (value) {
             double? parsedValue = double.tryParse(value);
             if (parsedValue != null) {
-              updateParam(parsedValue);
+              updateParam1(parsedValue);
+            }else{
+              updateParam1(0);
             }
           },
           keyboardType: const TextInputType.numberWithOptions(
@@ -80,7 +82,9 @@ Widget DoubleRangeTextInput(Function(double) updateParam,
           onChanged: (value) {
             double? parsedValue = double.tryParse(value);
             if (parsedValue != null) {
-              updateParam(parsedValue);
+              updateParam2(parsedValue);
+            }else{
+              updateParam2(0);
             }
           },
           keyboardType: const TextInputType.numberWithOptions(
