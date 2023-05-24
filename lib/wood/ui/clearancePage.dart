@@ -59,6 +59,7 @@ class _ClearancePageState extends State<ClearancePage> {
   @override
   void initState() {
     super.initState();
+    clearanceKits = [];
     myFocusNode = FocusNode();
   }
 
@@ -136,7 +137,8 @@ class _ClearancePageState extends State<ClearancePage> {
                               int.tryParse(code.replaceAll("kit_", "")) ?? 0;
                           getExtendedKit(parsedCode).then((success) {
                             if (success) {
-                              Navigator.of(context).pushNamed("/scsannedKit");
+                              clearanceKits.add(currentKit);
+                              setState(() {});
                             } else {
                               showToast("Código no encontrado");
                             }

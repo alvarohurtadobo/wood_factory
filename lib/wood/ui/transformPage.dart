@@ -1,33 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:wood_center/common/components/toast.dart';
 import 'package:wood_center/common/sizes.dart';
-import 'package:wood_center/wood/bloc/kitBloc.dart';
 import 'package:wood_center/wood/model/kit.dart';
-import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/user/model/user.dart';
+import 'package:wood_center/common/settings.dart';
 import 'package:wood_center/common/ui/appbar.dart';
 import 'package:wood_center/common/ui/drawer.dart';
+import 'package:wood_center/user/model/client.dart';
+import 'package:wood_center/wood/bloc/kitBloc.dart';
+import 'package:wood_center/wood/model/process.dart';
 import 'package:wood_center/wood/model/product.dart';
 import 'package:wood_center/user/model/employee.dart';
 import 'package:wood_center/user/model/provider.dart';
+import 'package:wood_center/common/components/toast.dart';
 import 'package:wood_center/common/components/button.dart';
 import 'package:wood_center/warehouse/model/location.dart';
 import 'package:wood_center/warehouse/model/warehouse.dart';
 import 'package:wood_center/common/components/rowPiece.dart';
 import 'package:wood_center/common/tools/datetimeParser.dart';
-import 'package:wood_center/common/components/expandedTile.dart';
 import 'package:wood_center/common/components/customDropDown.dart';
+import 'package:wood_center/common/components/doubleTextInput.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:wood_center/common/components/threeColumnRowPiece.dart';
+import 'package:wood_center/wood/model/transformation.dart';
 
-class InventoryPage extends StatefulWidget {
-  // InventoryPage({key, })
+class TransformPage extends StatefulWidget {
+  // TransformPage({key, })
   //     : super(key: key);
   @override
-  State<StatefulWidget> createState() => _InventoryPageState();
+  State<StatefulWidget> createState() => _TransformPageState();
 }
 
-class _InventoryPageState extends State<InventoryPage> {
+class _TransformPageState extends State<TransformPage> {
   int? currentWarehouseId;
   bool externalProvider = false;
 
@@ -58,8 +61,8 @@ class _InventoryPageState extends State<InventoryPage> {
   @override
   void initState() {
     super.initState();
+    clearanceKits = [];
     myFocusNode = FocusNode();
-    inventoryKits = [];
   }
 
   @override
@@ -77,7 +80,7 @@ class _InventoryPageState extends State<InventoryPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: MyDrawer(),
-      appBar: myAppBar("Generar Inventario"),
+      appBar: myAppBar("Transformación"),
       body: SizedBox(
         height: Sizes.height,
         width: Sizes.width,
@@ -96,28 +99,34 @@ class _InventoryPageState extends State<InventoryPage> {
                     ),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: Sizes.padding),
-                  child: const Text("INFORMACIÓN DE INVENTARIO",
+                  child: const Text("INFORMACIÓN DE PROCESO",
                       style: TextStyle(fontWeight: FontWeight.bold))),
-              rowPiece(const Text("Inventario"), const Text("0001")),
-              rowPiece(const Text("Fecha de apertura"),
-                  Text(DateTime.now().toIso8601String().substring(0,16).replaceAll("T", "\n"), maxLines: 1,)),
-              expandedTile(
-                  "Encargado",
-                  CustomDropDown(myEmployees, currentKit.employeeId, (value) {
-                    setState(() {
-                      currentKit.employeeId = value;
-                    });
-                  }, enabled: true)),
-              SizedBox(
-                height: Sizes.padding,
-              ),
               rowPiece(
-                  const Text("Escanear KIT",
+                  const Text("Proceso"),
+                  CustomDropDown(myProcesses, myTransform.processId, (value) {
+                    setState(() {
+                      myTransform.processId = myProcesses.firstWhere(
+                          (element) => element.id == value, orElse: () {
+                        return Process.empty();
+                      }).id;
+                    });
+                  })),
+              rowPiece(
+                  const Text("Observaciones"),
+                  DoubleTextInput((value) {
+                    currentKit.amount = value.toInt();
+                  },
+                      myFocusNode: myFocusNode,
+                      controller: amountController,
+                      enabled: false)),
+              rowPiece(
+                  const Text("KITS a transformar",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color(0xff3D464C))),
                   GestureDetector(
                     onTap: () {
+                      // Navigator.of(context).pushNamed("/scan");
                       FlutterBarcodeScanner.scanBarcode(
                               '#ff6666', 'Cancel', true, ScanMode.QR)
                           .then((String code) {
@@ -127,7 +136,7 @@ class _InventoryPageState extends State<InventoryPage> {
                               int.tryParse(code.replaceAll("kit_", "")) ?? 0;
                           getExtendedKit(parsedCode).then((success) {
                             if (success) {
-                              inventoryKits.add(currentKit);
+                              clearanceKits.add(currentKit);
                               setState(() {});
                             } else {
                               showToast("Código no encontrado");
@@ -146,35 +155,27 @@ class _InventoryPageState extends State<InventoryPage> {
                         alignment: Alignment.center,
                         child: const Text("Agregar")),
                   )),
-              threeColumnRowPiece(
-                  Text("KIT 1412"),
-                  Text(
-                    "ESTIBA",
-                    overflow: TextOverflow.fade,
-                  ),
-                  Text("RPRP2004")),
-              threeColumnRowPiece(
-                  Text("KIT 34"),
-                  Text(
-                    "CUARTONES",
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                  ),
-                  Text("PPTB1001")),
               SizedBox(
-                height: Sizes.padding,
-              ),
+                  height: Sizes.height / 3.6,
+                  width: Sizes.width,
+                  child: ListView(
+                    children: [
+                      for (Kit aKit in clearanceKits)
+                        threeColumnRowPiece(
+                            Text("KIT ${aKit.id}", maxLines: 1),
+                            Text(
+                              aKit.productName,
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                            ),
+                            Text(
+                              aKit.amount.toString(),
+                              maxLines: 1,
+                            )),
+                    ],
+                  )),
               CustomButton(
-                  "Guardar para mas tarde",
-                  const Color.fromARGB(255, 65, 62, 234),
-                  () async {},
-                  generating,
-                  enabled: false),
-              SizedBox(
-                height: Sizes.padding,
-              ),
-              CustomButton(
-                  "Generar Inventario",
+                  "Iniciar Transformación",
                   const Color.fromARGB(255, 68, 213, 80),
                   () async {},
                   generating,

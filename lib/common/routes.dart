@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wood_center/wood/ui/clearancePage.dart';
+import 'package:wood_center/wood/ui/inventoriesPage.dart';
 import 'package:wood_center/wood/ui/inventoryPage.dart';
+import 'package:wood_center/wood/ui/processesPage.dart';
 import 'package:wood_center/wood/ui/qrPage.dart';
 import 'package:wood_center/wood/ui/kitPage.dart';
 import 'package:wood_center/wood/ui/homePage.dart';
@@ -12,6 +14,7 @@ import 'package:wood_center/user/ui/profilePage.dart';
 import 'package:wood_center/common/ui/splashPage.dart';
 import 'package:wood_center/wood/ui/searchResults.dart';
 import 'package:wood_center/warehouse/ui/warehousesPage.dart';
+import 'package:wood_center/wood/ui/transformPage.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -36,6 +39,18 @@ class RouteGenerator {
       case "/inventory":
         return MaterialPageRoute(
           builder: (_) => InventoryPage(),
+        );
+      case "/inventories":
+        return MaterialPageRoute(
+          builder: (_) => InventoriesPage(),
+        );
+      case "/processes":
+        return MaterialPageRoute(
+          builder: (_) => ProcessesPage(),
+        );
+      case "/process":
+        return MaterialPageRoute(
+          builder: (_) => TransformPage(),
         );
       case "/updateKit":
         return MaterialPageRoute(

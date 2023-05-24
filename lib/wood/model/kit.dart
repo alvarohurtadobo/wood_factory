@@ -201,3 +201,4 @@ List<Kit> myKits = [
 ];
 
 List<Kit> clearanceKits = [];
+List<Kit> inventoryKits = [];

@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    clearanceKits = [];
     getSettings().then((success) {
       updateEmployeesAndProviders().then((successo) {
         getAllWarehouses().then((value) {
@@ -72,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                               int.tryParse(code.replaceAll("kit_", "")) ?? 0;
                           getExtendedKit(parsedCode).then((success) {
                             if (success) {
-                              clearanceKits.add(currentKit);
+                              Navigator.of(context).pushNamed("/scsannedKit");
                               setState(() {});
                             } else {
                               showToast("Código no encontrado");
@@ -159,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                       )
                     : Container(),
                 homeButton(
-                    routeName: '',
+                    routeName: '/processes',
                     title: 'Transformar',
                     backgroundColor: const Color.fromARGB(255, 84, 210, 202),
                     myIcon: Icons.transform_outlined),
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                     backgroundColor: const Color.fromARGB(255, 93, 148, 48),
                     myIcon: Icons.outbond_outlined),
                 homeButton(
-                    routeName: '/inventory',
+                    routeName: '/inventories',
                     title: 'Toma de inventarios',
                     backgroundColor: const Color.fromARGB(255, 91, 59, 186),
                     myIcon: Icons.inventory),
